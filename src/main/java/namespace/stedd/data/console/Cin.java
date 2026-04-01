@@ -167,6 +167,7 @@ public class Cin {
      * @param longString Строковое Большое Целое число
      * @return корректное Большое Целое число
      */
+    @Deprecated(since = "1.1", forRemoval = true)
     private static long withMaximum(String longString) {
         long max = Long.MAX_VALUE;
         String maxLong = Long.toString(max);
@@ -197,6 +198,7 @@ public class Cin {
      * @param longString Строковое Большое Целое число
      * @return корректное Большое Целое число
      */
+    @Deprecated(since = "1.1", forRemoval = true)
     private static long withMinimum(String longString) {
         long min = Long.MIN_VALUE;
         String minLong = Long.toString(min);
@@ -235,6 +237,7 @@ public class Cin {
      * @param number Строковое число
      * @return Большое Целое число
      */
+    @Deprecated(since = "1.1", forRemoval = true)
     private static long getLong(String number) {
         return number.contains("-") ? withMinimum(number) : withMaximum(number);
     }

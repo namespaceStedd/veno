@@ -1,10 +1,23 @@
 package namespace.stedd.data;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.ToNumberPolicy;
+import namespace.stedd.data.type.ExoNumber;
+import namespace.stedd.data.type.ExoString;
+
 /**
  * Преобразование величин из одного типа данных в другой.
  * @author Namespace Stedd
  */
 public class Converter {
+
+    public static final Gson json = new GsonBuilder()
+            .setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE)
+            .create();   // JSON-преобразователь по умолчанию
+
+    public static final GsonBuilder customJson = new GsonBuilder();   // JSON-конструктор
+
 
     /**
      * Проверка строки на NOT NULL.
@@ -13,7 +26,33 @@ public class Converter {
      * @return статус NOT NULL
      */
     public static boolean notNullStatus(String string) {
-        return string != null && !string.isEmpty();
+        return ExoString.notNullStatus(string);
+    }
+
+    /**
+     * Проверка объектов на NOT NULL равенство.
+     * @author Namespace Stedd
+     * @param firstObject первый сравниваемый объект
+     * @param secondObject второй сравниваемый объект
+     * @return NOT NULL равенство
+     * @param <T> универсальный параметр типа
+     */
+    public static <T> boolean notNullEquals(T firstObject, T secondObject) {
+        return notNullEquals(firstObject, secondObject, true);
+    }
+
+    /**
+     * Проверка объектов на NOT NULL равенство.
+     * @author Namespace Stedd
+     * @param firstObject первый сравниваемый объект
+     * @param secondObject второй сравниваемый объект
+     * @param acceptNullEquals допущение равенства при обоих NULL объектах
+     * @return NOT NULL равенство
+     * @param <T> универсальный параметр типа
+     */
+    public static <T> boolean notNullEquals(T firstObject, T secondObject, boolean acceptNullEquals) {
+        return acceptNullEquals && firstObject == null && secondObject == null ||   // Проверка возможности равенства NULL
+                firstObject != null && firstObject.equals(secondObject);
     }
 
     /**
@@ -24,7 +63,7 @@ public class Converter {
      * @return строчное значение для записи в Базу данных
      */
     public static String parseString(Object stringable, String ifNull) {
-        return stringable != null ? String.valueOf(stringable) : ifNull;
+        return ExoString.parseString(stringable, ifNull);
     }
 
     /**
@@ -34,9 +73,8 @@ public class Converter {
      * @param ifNull значение при пустом объекте
      * @return большеоцелочисленное значение
      */
-    public static Long parseLong(Object longable, long ifNull) {
-        String integerableString = parseString(longable, String.valueOf(ifNull));
-        return notNullStatus(integerableString) ? Long.parseLong(integerableString) : ifNull;
+    public static long parseLong(Object longable, long ifNull) {
+        return ExoNumber.parseLong(longable, ifNull);
     }
 
     /**
@@ -48,14 +86,7 @@ public class Converter {
      * @param <T> универсальный параметр типа
      */
     public static <T> String toArrayString(T[] array, String delimiter) {
-        StringBuilder arrayString = new StringBuilder();
-        for (T element : array) {
-            arrayString.append(element).append(delimiter);
-        }
-        int arrayLength = arrayString.length(), delimiterLength = delimiter.length();
-        return arrayLength > delimiterLength ?
-                arrayString.delete(arrayLength - delimiterLength, arrayLength).toString() :
-                arrayString.toString();
+        return ExoString.toArrayString(array, delimiter);
     }
 
     /**
