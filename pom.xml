@@ -5,7 +5,7 @@
   <!-- Параметры проекта -->
   <groupId>namespace.stedd</groupId>
   <artifactId>data</artifactId>
-  <version>1.1</version>
+  <version>1.2</version>
   <packaging>jar</packaging>
   <name>veno</name>
   <description>Библиотека по управлению данными</description>
@@ -83,21 +83,11 @@
           <artifactId>maven-compiler-plugin</artifactId>
           <version>3.8.1</version>
           <configuration>
-            <source>1.8</source>
-            <target>1.8</target>
+            <source>21</source>
+            <target>21</target>
           </configuration>
         </plugin>
       </plugins>
     </pluginManagement>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>21</source>
-          <target>21</target>
-        </configuration>
-      </plugin>
-    </plugins>
   </build>
 </project>

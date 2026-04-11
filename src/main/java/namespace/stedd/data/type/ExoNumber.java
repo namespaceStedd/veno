@@ -69,7 +69,7 @@ public class ExoNumber extends Number {
 
     /**
      * Преобразование объекта в цело-числовое значение с проверкой на NULL.
-     * @author JustSanya
+     * @author Namespace Stedd
      * @param integerable подвергающийся целоочислению объект
      * @param ifNull значение при пустом объекте
      * @return цело-числовое значение
@@ -80,7 +80,7 @@ public class ExoNumber extends Number {
 
     /**
      * Преобразование объекта в цело-числовое значение с проверкой на NULL.
-     * @author JustSanya
+     * @author Namespace Stedd
      * @param integerable подвергающийся целоочислению объект
      * @param ifNull значение при пустом объекте
      * @return цело-числовое значение
@@ -179,7 +179,6 @@ public class ExoNumber extends Number {
         String numerableString = ExoString.parseString(numerable, ExoString.parseString(ifNull, null));
         return ExoString.notNullStatus(numerableString) ? Double.parseDouble(numerableString) : ifNull;
     }
-
 
     /**
      * Returns the value of the specified number as a {@code double}.

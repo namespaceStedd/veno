@@ -8,6 +8,7 @@ import namespace.stedd.data.type.ExoString;
 
 /**
  * Преобразование величин из одного типа данных в другой.
+ * TODO: Дрёма с Async
  * @author Namespace Stedd
  */
 public class Converter {
