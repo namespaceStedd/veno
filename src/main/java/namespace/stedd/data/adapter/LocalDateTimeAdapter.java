@@ -13,6 +13,7 @@ import java.time.format.DateTimeFormatter;
 public class LocalDateTimeAdapter implements JsonSerializer<LocalDateTime>, JsonDeserializer<LocalDateTime> {
 
     private final String format;   // Указываемый формат Даты и Времени
+    private final DateTimeFormatter formatter;   // Форматировщик Даты и Времени
 
     /**
      * Создание специализированного адаптера формата Даты и Времени.
@@ -21,6 +22,17 @@ public class LocalDateTimeAdapter implements JsonSerializer<LocalDateTime>, Json
      */
     public LocalDateTimeAdapter(String format) {
         this.format = format;
+        this.formatter = DateTimeFormatter.ofPattern(this.format);
+    }
+
+    /**
+     * Создание специализированного адаптера формата Даты и Времени.
+     * @author Namespace Stedd
+     * @param formatter форматировщик Даты и Времени
+     */
+    public LocalDateTimeAdapter(DateTimeFormatter formatter) {
+        this.format = "";
+        this.formatter = formatter;
     }
 
     /**
@@ -33,7 +45,7 @@ public class LocalDateTimeAdapter implements JsonSerializer<LocalDateTime>, Json
      */
     @Override
     public JsonElement serialize(final LocalDateTime dateTime, final Type type, final JsonSerializationContext context) {
-        return new JsonPrimitive(dateTime.format(DateTimeFormatter.ofPattern(this.format)));
+        return new JsonPrimitive(dateTime.format(this.formatter));
     }
 
     /**
@@ -47,7 +59,7 @@ public class LocalDateTimeAdapter implements JsonSerializer<LocalDateTime>, Json
      */
     @Override
     public LocalDateTime deserialize(JsonElement json, Type type, JsonDeserializationContext context) throws JsonParseException {
-        return LocalDateTime.parse(json.getAsString(), DateTimeFormatter.ofPattern(this.format));
+        return LocalDateTime.parse(json.getAsString(), this.formatter);
     }
 
 }

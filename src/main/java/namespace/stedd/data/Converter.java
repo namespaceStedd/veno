@@ -6,6 +6,9 @@ import com.google.gson.ToNumberPolicy;
 import namespace.stedd.data.type.ExoNumber;
 import namespace.stedd.data.type.ExoString;
 
+import java.lang.reflect.Array;
+import java.util.List;
+
 /**
  * Преобразование величин из одного типа данных в другой.
  * TODO: Дрёма с Async
@@ -79,6 +82,22 @@ public class Converter {
     }
 
     /**
+     * Преобразование списка объектов в массив.
+     * @param list список объектов
+     * @param t класс выходного объекта
+     * @return массив объектов
+     * @param <T> универсальный параметр типа
+     */
+    public static <T> T[] toArray(List<T> list, Class<T> t) {
+        // noinspection unchecked
+        T[] array = (T[]) Array.newInstance(t, list.size());
+        for (int i = 0; i < array.length; i++) {
+            array[i] = list.get(i);
+        }
+        return array;
+    }
+
+    /**
      * Преобразование массива в строку с разделителем.
      * @author Namespace Stedd
      * @param array массив
@@ -88,6 +107,25 @@ public class Converter {
      */
     public static <T> String toArrayString(T[] array, String delimiter) {
         return ExoString.toArrayString(array, delimiter);
+    }
+
+    /**
+     * Преобразование списка в строку с разделителем.
+     * @author Namespace Stedd
+     * @param list список
+     * @param delimiter разделитель
+     * @return строчный список
+     * @param <T> универсальный параметр типа
+     */
+    public static <T> String toListString(List<T> list, String delimiter) {
+        StringBuilder arrayString = new StringBuilder();
+        for (T element : list) {
+            arrayString.append(element).append(delimiter);
+        }
+        int arrayLength = arrayString.length(), delimiterLength = delimiter.length();
+        return arrayLength > delimiterLength ?
+                arrayString.delete(arrayLength - delimiterLength, arrayLength).toString() :
+                arrayString.toString();
     }
 
     /**

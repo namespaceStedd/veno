@@ -1,4 +1,4 @@
-package namespace.stedd.data.console;
+package namespace.stedd.data.cincout.console;
 
 import namespace.stedd.data.Converter;
 

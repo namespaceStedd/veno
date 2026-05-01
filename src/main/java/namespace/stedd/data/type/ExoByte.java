@@ -214,6 +214,108 @@ public class ExoByte extends Number {
     }
 
     /**
+     * Преобразование массива байт в бинарную строку.
+     * @author Namespace Stedd
+     * @param bytes массив байт
+     * @return полученная бинарная строка
+     */
+    public static String bytesToBinaryString(byte... bytes) {
+        return bytesToBinaryString("", bytes);
+    }
+
+    /**
+     * Преобразование массива байт в бинарную строку.
+     * @author Namespace Stedd
+     * @param delimiter разделитель байт в бинарной строке
+     * @param bytes массив байт
+     * @return полученная бинарная строка
+     */
+    public static String bytesToBinaryString(String delimiter, byte... bytes) {
+        StringBuilder binaryString = new StringBuilder();
+        for (byte bytee : bytes) {
+            binaryString.append(String.format("%8s", Integer.toBinaryString(bytee & 0xff)).replace(' ', '0')).append(delimiter);
+        }
+        int startDeletePosition = java.lang.Math.max(binaryString.length() - delimiter.length(), 0),
+                endDeletePosition = java.lang.Math.max(binaryString.length(), 0);
+        return binaryString.delete(startDeletePosition, endDeletePosition).toString();
+    }
+
+    /**
+     * Преобразование бинарной строки в байт.
+     * @author Namespace Stedd
+     * @param binaryString бинарная строка
+     * @return полученный байт
+     */
+    public static byte binaryStringToByte(String binaryString) {
+        return binaryStringToByte("", binaryString, (byte) 0);
+    }
+
+    /**
+     * Преобразование бинарной строки в байт.
+     * @author Namespace Stedd
+     * @param delimiter разделитель байт в бинарной строке
+     * @param binaryString бинарная строка
+     * @return полученный байт
+     */
+    public static byte binaryStringToByte(String delimiter, String binaryString) {
+        return binaryStringToByte(delimiter, binaryString, (byte) 0);
+    }
+
+    /**
+     * Преобразование бинарной строки в байт.
+     * @author Namespace Stedd
+     * @param binaryString бинарная строка
+     * @param ifEmpty байт по умолчанию при пустом массиве
+     * @return полученный байт
+     */
+    public static byte binaryStringToByte(String binaryString, byte ifEmpty) {
+        return binaryStringToByte("", binaryString, ifEmpty);
+    }
+
+    /**
+     * Преобразование бинарной строки в байт.
+     * @author Namespace Stedd
+     * @param delimiter разделитель байт в бинарной строке
+     * @param binaryString бинарная строка
+     * @param ifEmpty байт по умолчанию при пустом массиве
+     * @return полученный байт
+     */
+    public static byte binaryStringToByte(String delimiter, String binaryString, byte ifEmpty) {
+        byte[] bytes = binaryStringToBytes(delimiter, binaryString);
+        return bytes.length < 1 ? ifEmpty : bytes[bytes.length - 1];
+    }
+
+    /**
+     * Преобразование бинарной строки в массив байт.
+     * @author Namespace Stedd
+     * @param binaryString бинарная строка
+     * @return полученный массив байт
+     */
+    public static byte[] binaryStringToBytes(String binaryString) {
+        return binaryStringToBytes("", binaryString);
+    }
+
+    /**
+     * Преобразование бинарной строки в массив байт.
+     * @author Namespace Stedd
+     * @param delimiter разделитель байт в бинарной строке
+     * @param binaryString бинарная строка
+     * @return полученный массив байт
+     */
+    public static byte[] binaryStringToBytes(String delimiter, String binaryString) {
+        binaryString = binaryString.replaceAll(delimiter, "");
+        int remainder = binaryString.length() % 8;
+        if (remainder % 2 != 0) {
+            binaryString = "0".repeat(8 - remainder) + binaryString;
+        }
+        byte[] bytes = new byte[binaryString.length() / 8];
+        for (int i = 0; i < binaryString.length(); i += 8) {
+            bytes[i / 8] = (byte) Integer.parseInt(binaryString.substring(i, i + 8), 2);
+        }
+        return bytes;
+    }
+
+    /**
      * Преобразование массива байт в строку HEX.
      * @author Namespace Stedd
      * @param bytes массив байт
@@ -238,6 +340,51 @@ public class ExoByte extends Number {
         int startDeletePosition = java.lang.Math.max(hexString.length() - delimiter.length(), 0),
                 endDeletePosition = java.lang.Math.max(hexString.length(), 0);
         return hexString.delete(startDeletePosition, endDeletePosition).toString();
+    }
+
+    /**
+     * Преобразование строки HEX в байт.
+     * @author Namespace Stedd
+     * @param hexString строка HEX
+     * @return полученный байт
+     */
+    public static byte hexStringToByte(String hexString) {
+        return hexStringToByte("", hexString, (byte) 0);
+    }
+
+    /**
+     * Преобразование строки HEX в байт.
+     * @author Namespace Stedd
+     * @param delimiter разделитель байт в HEX-строке
+     * @param hexString строка HEX
+     * @return полученный байт
+     */
+    public static byte hexStringToByte(String delimiter, String hexString) {
+        return hexStringToByte(delimiter, hexString, (byte) 0);
+    }
+
+    /**
+     * Преобразование строки HEX в байт.
+     * @author Namespace Stedd
+     * @param hexString строка HEX
+     * @param ifEmpty байт по умолчанию при пустом массиве
+     * @return полученный байт
+     */
+    public static byte hexStringToByte(String hexString, byte ifEmpty) {
+        return hexStringToByte("", hexString, ifEmpty);
+    }
+
+    /**
+     * Преобразование строки HEX в байт.
+     * @author Namespace Stedd
+     * @param delimiter разделитель байт в HEX-строке
+     * @param hexString строка HEX
+     * @param ifEmpty байт по умолчанию при пустом массиве
+     * @return полученный байт
+     */
+    public static byte hexStringToByte(String delimiter, String hexString, byte ifEmpty) {
+        byte[] bytes = hexStringToBytes(delimiter, hexString);
+        return bytes.length < 1 ? ifEmpty : bytes[bytes.length - 1];
     }
 
     /**
