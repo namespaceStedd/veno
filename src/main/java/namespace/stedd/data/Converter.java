@@ -7,11 +7,15 @@ import namespace.stedd.data.type.ExoNumber;
 import namespace.stedd.data.type.ExoString;
 
 import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Преобразование величин из одного типа данных в другой.
  * TODO: Дрёма с Async
+ * TODO: Все Тшки с примитивами
  * @author Namespace Stedd
  */
 public class Converter {
@@ -82,10 +86,10 @@ public class Converter {
     }
 
     /**
-     * Преобразование списка объектов в массив.
+     * Преобразование списка в массив.
      * @param list список объектов
      * @param t класс выходного объекта
-     * @return массив объектов
+     * @return массив
      * @param <T> универсальный параметр типа
      */
     public static <T> T[] toArray(List<T> list, Class<T> t) {
@@ -110,6 +114,20 @@ public class Converter {
     }
 
     /**
+     * Преобразование массива в список.
+     * @author Namespace Stedd
+     * @param array массив
+     * @return список
+     * @param <T> универсальный параметр типа
+     */
+    @SafeVarargs
+    public static <T> List<T> toList(T... array) {
+        List<T> list = (List<T>) new ArrayList<T>();
+        list.addAll(Arrays.asList(array));
+        return list;
+    }
+
+    /**
      * Преобразование списка в строку с разделителем.
      * @author Namespace Stedd
      * @param list список
@@ -118,14 +136,36 @@ public class Converter {
      * @param <T> универсальный параметр типа
      */
     public static <T> String toListString(List<T> list, String delimiter) {
-        StringBuilder arrayString = new StringBuilder();
-        for (T element : list) {
-            arrayString.append(element).append(delimiter);
+        return ExoString.toListString(list, delimiter);
+    }
+
+    /**
+     * Преобразование карты в строку с разделителем.
+     * @author Namespace Stedd
+     * @param map карта
+     * @param delimiter разделитель
+     * @return строчное представление списка
+     * @param <K> универсальный типовой ключ
+     * @param <V> универсальное типовое значение
+     */
+    public static <K, V> String toMapString(Map<K, V> map, String delimiter) {
+        StringBuilder string = new StringBuilder();
+        for (K k : map.keySet()) {
+            string.append(k.toString()).append(delimiter).append(map.get(k)).append('\n');
         }
-        int arrayLength = arrayString.length(), delimiterLength = delimiter.length();
-        return arrayLength > delimiterLength ?
-                arrayString.delete(arrayLength - delimiterLength, arrayLength).toString() :
-                arrayString.toString();
+        return (!string.isEmpty() ? string.deleteCharAt(string.length() - 1) : string).toString();
+    }
+
+    /**
+     * Преобразование массива в JSON-массив.
+     * @author Namespace Stedd
+     * @param array массив
+     * @return массив JSON-объектов
+     * @param <T> универсальный параметр типа
+     */
+    @SafeVarargs
+    public static <T> String toJsonArray(T... array) {
+        return json.toJson(array);
     }
 
     /**

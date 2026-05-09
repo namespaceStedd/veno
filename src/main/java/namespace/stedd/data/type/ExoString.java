@@ -1,5 +1,7 @@
 package namespace.stedd.data.type;
 
+import java.util.List;
+
 /**
  * Расширенное представление строки.
  * @author Namespace Stedd
@@ -114,6 +116,25 @@ public class ExoString {
     }
 
     /**
+     * Преобразование списка в строку с разделителем.
+     * @author Namespace Stedd
+     * @param list список
+     * @param delimiter разделитель
+     * @return строчный список
+     * @param <T> универсальный параметр типа
+     */
+    public static <T> String toListString(List<T> list, String delimiter) {
+        StringBuilder arrayString = new StringBuilder();
+        for (T element : list) {
+            arrayString.append(element).append(delimiter);
+        }
+        int arrayLength = arrayString.length(), delimiterLength = delimiter.length();
+        return arrayLength > delimiterLength ?
+                arrayString.delete(arrayLength - delimiterLength, arrayLength).toString() :
+                arrayString.toString();
+    }
+
+    /**
      * Получение строчного представления исключения.
      * @author Namespace Stedd
      * @param exception выбрасываемое исключение
@@ -160,7 +181,6 @@ public class ExoString {
      * Подписывание объекта.
      * @author Namespace Stedd
      * @param withNewLine допускание подписи с новой строки
-     * @param title подпись объекта
      * @param object подписываемый объект
      * @return подписанный объект
      */
@@ -222,6 +242,29 @@ public class ExoString {
             return (withNewLine ? "\n" : "") + this.string + ": " + stringObject;
         }
         return "";
+    }
+
+    /**
+     * Удаление последних символов в строке.
+     * @author Namespace Stedd
+     * @param string строка
+     * @param length количество удаляемых в конце символов
+     * @return строка без последних символов
+     */
+    public static String deleteLastChars(String string, int length) {
+        // TODO: Conv IsEm
+        return string != null && string.length() >= length ? string.substring(0, string.length() - length) : "";
+    }
+
+    /**
+     * Удаление последних символов в текущей строке.
+     * @author Namespace Stedd
+     * @param length количество удаляемых в конце символов
+     * @return расширенное представление строки
+     */
+    public ExoString deleteLastChars(int length) {
+        this.string = deleteLastChars(this.string, length);
+        return this;
     }
 
 }

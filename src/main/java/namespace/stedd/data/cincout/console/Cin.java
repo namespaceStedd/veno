@@ -1,6 +1,7 @@
 package namespace.stedd.data.cincout.console;
 
 import namespace.stedd.data.Converter;
+import namespace.stedd.data.type.ExoNumber;
 
 import java.util.Scanner;
 
@@ -173,7 +174,7 @@ public class Cin {
         String maxLong = Long.toString(max);
         // Если количество цифр меньше количества цифр в максимальном значении Большого Целого числа, то парсим реальное введённое число
         if (longString.length() < maxLong.length()) {
-            return Converter.parseLong(longString, 0);
+            return ExoNumber.parseLong(longString, 0);
         }
         // Если количество цифр больше количества цифр в максимальном значении Большого Целого числа, то отправляем максимальное число
         else if (longString.length() > maxLong.length()) {
@@ -188,7 +189,7 @@ public class Cin {
                     return max;
                 }
             }
-            return Converter.parseLong(longString, 0);
+            return ExoNumber.parseLong(longString, 0);
         }
     }
 
@@ -208,7 +209,7 @@ public class Cin {
         }
         // Если количество цифр меньше количества цифр в максимальном значении Большого Целого числа, то парсим реальное введённое число
         else if (longString.length() < minLong.length()) {
-            return Converter.parseLong(longString, 0);
+            return ExoNumber.parseLong(longString, 0);
         }
         // Если количество цифр больше количества цифр в максимальном значении Большого Целого числа, то отправляем максимальное число
         else if (longString.length() > minLong.length()) {
@@ -227,7 +228,7 @@ public class Cin {
                     return min;
                 }
             }
-            return Converter.parseLong(longString, 0);
+            return ExoNumber.parseLong(longString, 0);
         }
     }
 

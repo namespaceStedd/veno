@@ -94,7 +94,7 @@ public interface ExObject {
      * @return возможность преобразования в примитив
      */
     static boolean seemsLikePrimitive(Object object) {
-        String stringObject = Converter.parseString(object, null);
+        String stringObject = ExoString.parseString(object, null);
         if (stringObject == null || stringObject.isEmpty()) {
             return false;
         }

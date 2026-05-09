@@ -1,6 +1,5 @@
 package namespace.stedd.data.type;
 
-import namespace.stedd.data.Converter;
 import namespace.stedd.data.type.number.Range;
 
 /**
@@ -68,22 +67,45 @@ public class ExoNumber extends Number {
     }
 
     /**
-     * Преобразование объекта в цело-числовое значение с проверкой на NULL.
+     * Преобразование объекта в малое целое число с проверкой на NULL.
      * @author Namespace Stedd
-     * @param integerable подвергающийся целоочислению объект
+     * @param shortable подвергающийся малоочислению объект
      * @param ifNull значение при пустом объекте
-     * @return цело-числовое значение
+     * @return малое целое число
      */
-    public static int parseInteger(Object integerable, int ifNull) {
-        return parseInteger(integerable, ifNull);
+    public static short parseShort(Object shortable, short ifNull) {
+        return parseShort(shortable, Short.valueOf(ifNull));
     }
 
     /**
-     * Преобразование объекта в цело-числовое значение с проверкой на NULL.
+     * Преобразование объекта в малое целое число с проверкой на NULL.
+     * @author Namespace Stedd
+     * @param shortable подвергающийся малоочислению объект
+     * @param ifNull значение при пустом объекте
+     * @return малое целое число
+     */
+    public static Short parseShort(Object shortable, Short ifNull) {
+        String shortableString = ExoString.parseString(shortable, ExoString.parseString(ifNull, null));
+        return ExoString.notNullStatus(shortableString) ? Short.parseShort(shortableString.split("\\.")[0]) : ifNull;
+    }
+
+    /**
+     * Преобразование объекта в целое число с проверкой на NULL.
      * @author Namespace Stedd
      * @param integerable подвергающийся целоочислению объект
      * @param ifNull значение при пустом объекте
-     * @return цело-числовое значение
+     * @return целое число
+     */
+    public static int parseInteger(Object integerable, int ifNull) {
+        return parseInteger(integerable, Integer.valueOf(ifNull));
+    }
+
+    /**
+     * Преобразование объекта в целое число с проверкой на NULL.
+     * @author Namespace Stedd
+     * @param integerable подвергающийся целоочислению объект
+     * @param ifNull значение при пустом объекте
+     * @return целое число
      */
     public static Integer parseInteger(Object integerable, Integer ifNull) {
         String integerableString = ExoString.parseString(integerable, ExoString.parseString(ifNull, null));
@@ -102,26 +124,26 @@ public class ExoNumber extends Number {
     }
 
     /**
-     * Преобразование объекта в большое целое число с проверкой на null.
+     * Преобразование объекта в большое целое число с проверкой на NULL.
      * @author Namespace Stedd
      * @param longable подвергающийся большеоцелоочислению объект
      * @param ifNull значение при пустом объекте
-     * @return большеоцелочисленное значение
+     * @return большое целое число
      */
     public static long parseLong(Object longable, long ifNull) {
-        return parseLong(longable, ifNull);
+        return parseLong(longable, Long.valueOf(ifNull));
     }
 
     /**
-     * Преобразование объекта в большое целое число с проверкой на null.
+     * Преобразование объекта в большое целое число с проверкой на NULL.
      * @author Namespace Stedd
      * @param longable подвергающийся большеоцелоочислению объект
      * @param ifNull значение при пустом объекте
-     * @return большеоцелочисленное значение
+     * @return большое целое число
      */
     public static Long parseLong(Object longable, Long ifNull) {
-        String integerableString = ExoString.parseString(longable, String.valueOf(ifNull));
-        return ExoString.notNullStatus(integerableString) ? Long.parseLong(integerableString) : ifNull;
+        String longableString = ExoString.parseString(longable, ExoString.parseString(ifNull, null));
+        return ExoString.notNullStatus(longableString) ? Long.parseLong(longableString) : ifNull;
     }
 
     /**
@@ -164,8 +186,7 @@ public class ExoNumber extends Number {
      * @return числовое значение
      */
     public static double parseNumber(Object numerable, double ifNull) {
-        String numerableString = ExoString.parseString(numerable, String.valueOf(ifNull));
-        return ExoString.notNullStatus(numerableString) ? Double.parseDouble(numerableString) : ifNull;
+        return parseNumber(numerable, Double.valueOf(ifNull));
     }
 
     /**
@@ -206,7 +227,7 @@ public class ExoNumber extends Number {
         }
         // Если количество цифр меньше количества цифр в максимальном значении Большого Целого числа, то парсим реальное введённое число
         else if (longString.length() < minLong.length()) {
-            return Converter.parseLong(longString, 0);
+            return parseLong(longString, 0);
         }
         // Если количество цифр больше количества цифр в максимальном значении Большого Целого числа, то отправляем максимальное число
         else if (longString.length() > minLong.length()) {
@@ -225,7 +246,7 @@ public class ExoNumber extends Number {
                     return min;
                 }
             }
-            return Converter.parseLong(longString, 0);
+            return parseLong(longString, 0);
         }
     }
 
@@ -240,7 +261,7 @@ public class ExoNumber extends Number {
         String maxLong = Long.toString(max);
         // Если количество цифр меньше количества цифр в максимальном значении Большого Целого числа, то парсим реальное введённое число
         if (longString.length() < maxLong.length()) {
-            return Converter.parseLong(longString, 0);
+            return parseLong(longString, 0);
         }
         // Если количество цифр больше количества цифр в максимальном значении Большого Целого числа, то отправляем максимальное число
         else if (longString.length() > maxLong.length()) {
@@ -255,7 +276,7 @@ public class ExoNumber extends Number {
                     return max;
                 }
             }
-            return Converter.parseLong(longString, 0);
+            return parseLong(longString, 0);
         }
     }
 

@@ -72,8 +72,8 @@ public class ExoByte extends Number {
      * @param ifNull значение при пустом объекте
      * @return байт-числовое значение
      */
-    public static int parseByte(Object byteable, byte ifNull) {
-        return parseInteger(byteable, ifNull);
+    public static byte parseByte(Object byteable, byte ifNull) {
+        return parseByte(byteable, Byte.valueOf(ifNull));
     }
 
     /**
@@ -83,9 +83,9 @@ public class ExoByte extends Number {
      * @param ifNull значение при пустом объекте
      * @return байт-числовое значение
      */
-    public static Byte parseInteger(Object byteable, byte ifNull) {
-        String integerableString = ExoString.parseString(byteable, ExoString.parseString(ifNull, null));
-        return ExoString.notNullStatus(integerableString) ? Byte.parseByte(integerableString.split("\\.")[0]) : ifNull;
+    public static Byte parseByte(Object byteable, Byte ifNull) {
+        String byteableString = ExoString.parseString(byteable, ExoString.parseString(ifNull, null));
+        return ExoString.notNullStatus(byteableString) ? Byte.parseByte(byteableString.split("\\.")[0]) : ifNull;
     }
 
     /**
