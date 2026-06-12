@@ -3,6 +3,7 @@ package namespace.stedd.data;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.ToNumberPolicy;
+import namespace.stedd.data.type.ExoCollection;
 import namespace.stedd.data.type.ExoNumber;
 import namespace.stedd.data.type.ExoString;
 
@@ -93,12 +94,7 @@ public class Converter {
      * @param <T> универсальный параметр типа
      */
     public static <T> T[] toArray(List<T> list, Class<T> t) {
-        // noinspection unchecked
-        T[] array = (T[]) Array.newInstance(t, list.size());
-        for (int i = 0; i < array.length; i++) {
-            array[i] = list.get(i);
-        }
-        return array;
+        return ExoCollection.toArray(list, t);
     }
 
     /**
@@ -122,9 +118,7 @@ public class Converter {
      */
     @SafeVarargs
     public static <T> List<T> toList(T... array) {
-        List<T> list = (List<T>) new ArrayList<T>();
-        list.addAll(Arrays.asList(array));
-        return list;
+        return ExoCollection.toList(array);
     }
 
     /**
@@ -149,11 +143,7 @@ public class Converter {
      * @param <V> универсальное типовое значение
      */
     public static <K, V> String toMapString(Map<K, V> map, String delimiter) {
-        StringBuilder string = new StringBuilder();
-        for (K k : map.keySet()) {
-            string.append(k.toString()).append(delimiter).append(map.get(k)).append('\n');
-        }
-        return (!string.isEmpty() ? string.deleteCharAt(string.length() - 1) : string).toString();
+        return ExoCollection.toMapString(map, delimiter);
     }
 
     /**
@@ -165,7 +155,7 @@ public class Converter {
      */
     @SafeVarargs
     public static <T> String toJsonArray(T... array) {
-        return json.toJson(array);
+        return ExoCollection.toJsonArray(array);
     }
 
     /**

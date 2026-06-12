@@ -1,5 +1,9 @@
 package namespace.stedd.data.type;
 
+import namespace.stedd.data.Converter;
+import namespace.stedd.data.type.string.AlignPosition;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -265,6 +269,140 @@ public class ExoString {
     public ExoString deleteLastChars(int length) {
         this.string = deleteLastChars(this.string, length);
         return this;
+    }
+
+    /**
+     * Проверка содержания любой из указанных подстрок в текущей строке.
+     * @author Namespace Stedd
+     * @param substrings подстроки
+     * @return результат содержания в текущей строке
+     */
+    public boolean contains(String... substrings) {
+        return stringContains(this.string, substrings);
+    }
+
+    /**
+     * Проверка содержания любой из указанных подстрок в текущей строке.
+     * @author Namespace Stedd
+     * @param string строка
+     * @param substrings подстроки
+     * @return результат содержания в текущей строке
+     */
+    public static boolean stringContains(String string, String... substrings) {
+        for (String substring : substrings) {
+            if (string.contains(substring)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Выравнивание строки по указанной позиции.
+     * @author Namespace Stedd
+     * @param string выравниваемая строка
+     * @param alignPosition позиция выравнивания
+     * @param maxLength максимальная длина строки
+     * @param minIndentation минимальный отступ строки
+     * @return выравненная строка
+     */
+    public static String align(String string, AlignPosition alignPosition, int maxLength, int minIndentation) {
+        // Позитивирование переменных
+        maxLength = Math.max(1, maxLength);
+        minIndentation = Math.max(0, minIndentation);
+        int maxClearLength = Math.max(1, maxLength - 2 * minIndentation);
+        // Список выравненных частей строки
+        List<String> aligned = new ArrayList<>();
+        // Объявление текущей части строки
+        StringBuilder currentStringLine = new StringBuilder();
+        // Разделение по словам
+        String[] words = string.split(" ");
+        // Для каждого едкого словца из строки
+        for (int i = 0, currentLength = currentStringLine.length();
+             i < words.length;
+             i++, currentLength = currentStringLine.length()) {
+            // Текущее слово
+            String word = words[i];
+            // Если к текущей строке добавить текущее слово с пробелом (+1) и длина будет меньше чистой максимальной, при этом всём слова уже были добавлены
+            if (currentLength + word.length() + 1 > maxClearLength && currentLength > 0) {
+                // Определяем текущую часть строки с отступами и добавляем в список
+                aligned.add(createPart(currentStringLine.toString(), alignPosition, maxLength, minIndentation));
+                // Обнуляем текущую часть строки
+                currentStringLine = new StringBuilder();
+            }
+            // Если текущее слово длиннее максимальной длины – придётся делать обрезание...
+            while (word.length() > maxClearLength) {
+                // Определение текущей части слова
+                String wordPart = word.substring(0, maxClearLength);
+                // Определяем текущую часть строки с отступами и добавляем в список
+                aligned.add(createPart(wordPart, alignPosition, maxLength, minIndentation));
+                // Обнуляем текущую часть слова
+                word = word.substring(maxClearLength);
+            }
+            // Добавляем к текущей части строки слово
+            currentStringLine.append(currentStringLine.isEmpty() ? "" : " ").append(word);
+        }
+        // Если остались недосказанные слова
+        if (!currentStringLine.isEmpty()) {
+            // Определяем текущую часть строки с отступами и добавляем в список
+            aligned.add(createPart(currentStringLine.toString(), alignPosition, maxLength, minIndentation));
+        }
+        // Преобразование в строчный список элементов с разделителем-переносом
+        return Converter.toListString(aligned, "\n");
+    }
+
+    /**
+     * Создание полноценной части перенесённой строки.
+     * @author Namespace Stedd
+     * @param stringPart текущая часть строки
+     * @param alignPosition позиция выравнивания
+     * @param maxLength максимальная длина строки
+     * @param minIndentation минимальный отступ строки
+     * @return полноценная часть перенесённой строки
+     */
+    private static String createPart(String stringPart, AlignPosition alignPosition, int maxLength, int minIndentation) {
+        // Расчёт отступов с двух сторон
+        int bothCenterIndentation = Math.max(0, maxLength - stringPart.length()), beganSpaces = switch (alignPosition) {
+            case LEFT -> minIndentation;
+            case CENTER -> bothCenterIndentation / 2 + bothCenterIndentation % 2;
+            case RIGHT -> 0;
+        }, endingSpaces = switch (alignPosition) {
+            case LEFT -> 0;
+            case CENTER -> bothCenterIndentation / 2;
+            case RIGHT -> minIndentation;
+        };
+        // Складываем части текущей части строки
+        return " ".repeat(beganSpaces)   // Начальный отступ
+                + stringPart   // Текущая часть строки
+                + " ".repeat(endingSpaces)   // Конечный отступ
+                ;
+    }
+
+    /**
+     * Разделение пар ключ-значение по разным краям.
+     * @author Namespace Stedd
+     * @param key ключ
+     * @param value значение
+     * @param maxLength максимальная длина строки
+     * @param minIndentation минимальный отступ строки с двух сторон
+     * @return выравненная строка
+     */
+    public static String alignToEdges(String key, String value, int maxLength, int minIndentation) {
+        // Начальные установки
+        maxLength = Math.max(1, maxLength);
+        minIndentation = Math.max(0, minIndentation);
+        // Выравненные части строки
+        List<String> aligned = new ArrayList<>();
+        // Разнесённые по колонкам пара ключ-значение
+        String[] cornedKeys = align(key, AlignPosition.LEFT, maxLength / 2, minIndentation).split("\n");
+        String[] cornedValues = align(value, AlignPosition.RIGHT, maxLength / 2, minIndentation).split("\n");
+        for (int i = 0; i < cornedKeys.length || i < cornedValues.length; i++) {
+            String cornedKey = i < cornedKeys.length ? cornedKeys[i] : " ".repeat(minIndentation + 1);
+            String cornedValue = i < cornedValues.length ? cornedValues[i] : " ".repeat(minIndentation + 1);
+            int lengthBetween = Math.max(0, maxLength - cornedKey.length() - cornedValue.length());
+            aligned.add(cornedKey + " ".repeat(lengthBetween) + cornedValue);
+        }
+        return Converter.toListString(aligned, "\n");
     }
 
 }

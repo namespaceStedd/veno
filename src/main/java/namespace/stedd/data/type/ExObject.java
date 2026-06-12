@@ -3,6 +3,7 @@ package namespace.stedd.data.type;
 import com.google.gson.Gson;
 import namespace.stedd.data.Converter;
 
+import java.lang.reflect.Field;
 import java.util.Map;
 
 /**
@@ -111,6 +112,34 @@ public interface ExObject {
             }
         }
         return true;
+    }
+
+    /**
+     * Обновление параметров объекта по JSON-объекту.
+     * @author Namespace Stedd
+     * @param json строковый JSON-объект
+     * @param implementedClass реализованный интерфейс
+     * @param <T> универсальный параметр типа
+     */
+    default <T extends ExObject> void update(String json, Class<T> implementedClass) {
+        // Получение объекта из JSON
+        ExObject exobject = Converter.json.fromJson(json, implementedClass);
+        this.update(exobject);
+    }
+
+    /**
+     * Обновление параметров расширенного объекта по другому расширенному объекту.
+     * @author Namespace Stedd
+     * @param object представляемый расширенный объект
+     */
+    default void update(ExObject object) {
+        // Получение полей класса
+        Field[] fields = this.getClass().getDeclaredFields();
+        // Перебор полей класса
+        for (Field field : fields) {
+            // Обновление полей, на которых присутствует значение
+            ExoField.updateWithNullAvoiding(field, object, this);
+        }
     }
 
 }
