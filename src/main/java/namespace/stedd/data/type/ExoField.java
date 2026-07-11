@@ -62,6 +62,63 @@ public class ExoField {
     }
 
     /**
+     * Получение всех полей экземпляра класса с их значениями.
+     * @author Namespace Stedd
+     * @param instance экземпляр класса
+     * @return массив расширенных полей
+     */
+    public static ExoField[] getFields(Object instance) {
+        return getFields(instance, true);
+    }
+
+    /**
+     * Получение всех полей экземпляра класса с их значениями.
+     * @author Namespace Stedd
+     * @param instance экземпляр класса
+     * @param includeParentFields необходимость включения полей родительского класса
+     * @return массив расширенных полей
+     */
+    public static ExoField[] getFields(Object instance, boolean includeParentFields) {
+        Field[] fields = includeParentFields ?
+                getParentFields(instance, true) :
+                instance.getClass().getDeclaredFields();
+        ExoField[] exoFields = new ExoField[fields.length];
+        for (int i = 0; i < exoFields.length; i++) {
+            Field field = fields[i];
+            ExoField exoField = ExoField.create(field, instance);
+            exoFields[i] = exoField;
+        }
+        return exoFields;
+    }
+
+    /**
+     * Получение родительских полей класса.
+     * @author Namespace Stedd
+     * @param instance экземпляр класса
+     * @param includeCurrentFields показатель необходимости включить текущие поля класса
+     * @return родительские поля класса
+     */
+    private static Field[] getParentFields(Object instance, boolean includeCurrentFields) {
+        Field[] fields = includeCurrentFields ? instance.getClass().getDeclaredFields() : new Field[0];
+        for (Class<?> parentClass = instance.getClass();
+             parentClass != null;
+             parentClass = parentClass.getSuperclass()) {
+            // fields.addAll(Arrays.asList(parentClass.getDeclaredFields()));
+            fields = ExoCollection.mergeArrays(fields, parentClass.getDeclaredFields(), Field.class);
+        }
+        return fields;
+    }
+
+    /**
+     * Получение названия поля.
+     * @author Namespace Stedd
+     * @return название поля
+     */
+    public String getName() {
+        return this.field.getName();
+    }
+
+    /**
      * Получение значения текущего поля.
      * @author Namespace Stedd
      * @return значение текущего поля

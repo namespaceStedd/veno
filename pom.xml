@@ -5,7 +5,7 @@
   <!-- Параметры проекта -->
   <groupId>namespace.stedd</groupId>
   <artifactId>data</artifactId>
-  <version>1.5</version>
+  <version>1.6</version>
   <packaging>jar</packaging>
   <name>veno</name>
   <description>Библиотека по управлению данными</description>

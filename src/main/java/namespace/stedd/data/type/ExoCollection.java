@@ -1,6 +1,7 @@
 package namespace.stedd.data.type;
 
 import namespace.stedd.data.Converter;
+import namespace.stedd.data.adapter.TypeConverterRule;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -127,6 +128,25 @@ public class ExoCollection {
     }
 
     /**
+     * Преобразование массива элементов одного типа в массив элементов другого типа.
+     * @author Namespace Stedd
+     * @param sourceArray массив элементов первого типа
+     * @param e2 класс элементов конечного массива
+     * @param rule правило конвертирования одного типа в другой
+     * @return массив элементов второго типа
+     * @param <E1> тип элементов исходного массива
+     * @param <E2> тип элементов конечного массива
+     */
+    public static <E1, E2> E2[] convert(E1[] sourceArray, Class<E2> e2, TypeConverterRule<E1, E2> rule) {
+        // noinspection unchecked
+        E2[] newArray = (E2[]) Array.newInstance(e2, sourceArray.length);
+        for (int i = 0; i < newArray.length; i++) {
+            newArray[i] = rule.convert(sourceArray[i]);
+        }
+        return newArray;
+    }
+
+    /**
      * Преобразование списка в массив.
      * @author Namespace Stedd
      * @param list список объектов
@@ -141,6 +161,160 @@ public class ExoCollection {
             array[i] = list.get(i);
         }
         return array;
+    }
+
+    /**
+     * Преобразование массива байт в массив малых целых чисел.
+     * @author Namespace Stedd
+     * @param array массив байт
+     * @return массив малых целых чисел
+     */
+    public static short[] toShortArray(byte... array) {
+        short[] shorts = new short[array.length];
+        for (int i = 0; i < shorts.length; i++) {
+            shorts[i] = array[i];
+        }
+        return shorts;
+    }
+
+    /**
+     * Преобразование массива байт в массив целых чисел.
+     * @author Namespace Stedd
+     * @param array массив байт
+     * @return массив целых чисел
+     */
+    public static int[] toIntegerArray(byte... array) {
+        int[] ints = new int[array.length];
+        for (int i = 0; i < ints.length; i++) {
+            ints[i] = array[i];
+        }
+        return ints;
+    }
+
+    /**
+     * Преобразование массива малых целых чисел в массив целых чисел.
+     * @author Namespace Stedd
+     * @param array массив малых целых чисел
+     * @return массив целых чисел
+     */
+    public static int[] toIntegerArray(short... array) {
+        int[] ints = new int[array.length];
+        for (int i = 0; i < ints.length; i++) {
+            ints[i] = array[i];
+        }
+        return ints;
+    }
+
+    /**
+     * Преобразование массива байт в массив больших целых чисел.
+     * @author Namespace Stedd
+     * @param array массив байт
+     * @return массив больших целых чисел
+     */
+    public static long[] toLongArray(byte... array) {
+        long[] longs = new long[array.length];
+        for (int i = 0; i < longs.length; i++) {
+            longs[i] = array[i];
+        }
+        return longs;
+    }
+
+    /**
+     * Преобразование массива малых целых чисел в массив больших целых чисел.
+     * @author Namespace Stedd
+     * @param array массив малых целых чисел
+     * @return массив больших целых чисел
+     */
+    public static long[] toLongArray(short... array) {
+        long[] longs = new long[array.length];
+        for (int i = 0; i < longs.length; i++) {
+            longs[i] = array[i];
+        }
+        return longs;
+    }
+
+    /**
+     * Преобразование массива целых чисел в массив больших целых чисел.
+     * @author Namespace Stedd
+     * @param array массив целых чисел
+     * @return массив больших целых чисел
+     */
+    public static long[] toLongArray(int... array) {
+        long[] longs = new long[array.length];
+        for (int i = 0; i < longs.length; i++) {
+            longs[i] = array[i];
+        }
+        return longs;
+    }
+
+    /**
+     * Преобразование массива байт в массив дробных чисел двойной точности.
+     * @author Namespace Stedd
+     * @param array массив байт
+     * @return массив дробных чисел двойной точности
+     */
+    public static double[] toDoubleArray(byte... array) {
+        double[] doubles = new double[array.length];
+        for (int i = 0; i < doubles.length; i++) {
+            doubles[i] = array[i];
+        }
+        return doubles;
+    }
+
+    /**
+     * Преобразование массива малых целых чисел в массив дробных чисел двойной точности.
+     * @author Namespace Stedd
+     * @param array массив малых целых чисел
+     * @return массив дробных чисел двойной точности
+     */
+    public static double[] toDoubleArray(short... array) {
+        double[] doubles = new double[array.length];
+        for (int i = 0; i < doubles.length; i++) {
+            doubles[i] = array[i];
+        }
+        return doubles;
+    }
+
+    /**
+     * Преобразование массива целых чисел в массив дробных чисел двойной точности.
+     * @author Namespace Stedd
+     * @param array массив целых чисел
+     * @return массив дробных чисел двойной точности
+     */
+    public static double[] toDoubleArray(int... array) {
+        double[] doubles = new double[array.length];
+        for (int i = 0; i < doubles.length; i++) {
+            doubles[i] = array[i];
+        }
+        return doubles;
+    }
+
+    /**
+     * Преобразование массива больших целых чисел в массив дробных чисел двойной точности.
+     * @author Namespace Stedd
+     * @param array массив больших целых чисел
+     * @return массив дробных чисел двойной точности
+     */
+    public static double[] toDoubleArray(long... array) {
+        double[] doubles = new double[array.length];
+        for (int i = 0; i < doubles.length; i++) {
+            doubles[i] = array[i];
+        }
+        return doubles;
+    }
+
+    /**
+     * Преобразование массива дробных чисел в массив дробных чисел двойной точности.
+     * @author Namespace Stedd
+     * @param array массив дробных чисел
+     * @return массив дробных чисел двойной точности
+     */
+    public static double[] toDoubleArray(float... array) {
+        double[] doubles = new double[array.length];
+        for (int i = 0; i < doubles.length; i++) {
+            doubles[i] = array[i];
+        }
+        return doubles;
     }
 
     /**
@@ -249,6 +423,124 @@ public class ExoCollection {
     public static String toArrayString(float[] array, String delimiter) {
         Float[] floats = wrap(array);
         return ExoString.toArrayString(floats, delimiter);
+    }
+
+    /**
+     * Преобразование списка элементов одного типа в список элементов другого типа.
+     * @author Namespace Stedd
+     * @param sourceList список элементов первого типа
+     * @param rule правило конвертирования одного типа в другой
+     * @return список элементов второго типа
+     * @param <E1> тип элементов исходного списка
+     * @param <E2> тип элементов конечного списка
+     */
+    public static <E1, E2> List<E2> convert(List<E1> sourceList, TypeConverterRule<E1, E2> rule) {
+        List<E2> newList = new ArrayList<>();
+        for (E1 e1 : sourceList) {
+            newList.add(rule.convert(e1));
+        }
+        return newList;
+    }
+
+    /**
+     * Объединение массивов байт в один.
+     * @author Namespace Stedd
+     * @param firstArray первый массив байт
+     * @param secondArray второй массив байт
+     * @return объединённый массив байт
+     */
+    public static byte[] mergeArrays(byte[] firstArray, byte[] secondArray) {
+        byte[] superArray = new byte[firstArray.length + secondArray.length];
+        System.arraycopy(firstArray, 0, superArray, 0, firstArray.length);
+        System.arraycopy(secondArray, 0, superArray, firstArray.length, secondArray.length);
+        return superArray;
+    }
+
+    /**
+     * Объединение массивов малых целых чисел в один.
+     * @author Namespace Stedd
+     * @param firstArray первый массив малых целых чисел
+     * @param secondArray второй массив малых целых чисел
+     * @return объединённый массив малых целых чисел
+     */
+    public static short[] mergeArrays(short[] firstArray, short[] secondArray) {
+        short[] superArray = new short[firstArray.length + secondArray.length];
+        System.arraycopy(firstArray, 0, superArray, 0, firstArray.length);
+        System.arraycopy(secondArray, 0, superArray, firstArray.length, secondArray.length);
+        return superArray;
+    }
+
+    /**
+     * Объединение массивов целых чисел в один.
+     * @author Namespace Stedd
+     * @param firstArray первый массив целых чисел
+     * @param secondArray второй массив целых чисел
+     * @return объединённый массив целых чисел
+     */
+    public static int[] mergeArrays(int[] firstArray, int[] secondArray) {
+        int[] superArray = new int[firstArray.length + secondArray.length];
+        System.arraycopy(firstArray, 0, superArray, 0, firstArray.length);
+        System.arraycopy(secondArray, 0, superArray, firstArray.length, secondArray.length);
+        return superArray;
+    }
+
+    /**
+     * Объединение массивов больших целых чисел в один.
+     * @author Namespace Stedd
+     * @param firstArray первый массив больших целых чисел
+     * @param secondArray второй массив больших целых чисел
+     * @return объединённый массив больших целых чисел
+     */
+    public static long[] mergeArrays(long[] firstArray, long[] secondArray) {
+        long[] superArray = new long[firstArray.length + secondArray.length];
+        System.arraycopy(firstArray, 0, superArray, 0, firstArray.length);
+        System.arraycopy(secondArray, 0, superArray, firstArray.length, secondArray.length);
+        return superArray;
+    }
+
+    /**
+     * Объединение массивов дробных чисел в один.
+     * @author Namespace Stedd
+     * @param firstArray первый массив дробных чисел
+     * @param secondArray второй массив дробных чисел
+     * @return объединённый массив дробных чисел
+     */
+    public static float[] mergeArrays(float[] firstArray, float[] secondArray) {
+        float[] superArray = new float[firstArray.length + secondArray.length];
+        System.arraycopy(firstArray, 0, superArray, 0, firstArray.length);
+        System.arraycopy(secondArray, 0, superArray, firstArray.length, secondArray.length);
+        return superArray;
+    }
+
+    /**
+     * Объединение массивов дробных чисел двойной точности в один.
+     * @author Namespace Stedd
+     * @param firstArray первый массив дробных чисел двойной точности
+     * @param secondArray второй массив дробных чисел двойной точности
+     * @return объединённый массив дробных чисел двойной точности
+     */
+    public static double[] mergeArrays(double[] firstArray, double[] secondArray) {
+        double[] superArray = new double[firstArray.length + secondArray.length];
+        System.arraycopy(firstArray, 0, superArray, 0, firstArray.length);
+        System.arraycopy(secondArray, 0, superArray, firstArray.length, secondArray.length);
+        return superArray;
+    }
+
+    /**
+     * Объединение массивов в один.
+     * @author Namespace Stedd
+     * @param firstArray первый массив
+     * @param secondArray второй массив
+     * @param t класс выходного обхекта
+     * @return объединённый массив
+     * @param <T> универсальный параметр типа
+     */
+    public static <T> T[] mergeArrays(T[] firstArray, T[] secondArray, Class<T> t) {
+        // noinspection unchecked
+        T[] superArray = (T[]) Array.newInstance(t, firstArray.length + secondArray.length);
+        System.arraycopy(firstArray, 0, superArray, 0, firstArray.length);
+        System.arraycopy(secondArray, 0, superArray, firstArray.length, secondArray.length);
+        return superArray;
     }
 
     /**

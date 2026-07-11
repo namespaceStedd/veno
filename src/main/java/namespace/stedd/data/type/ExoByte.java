@@ -155,7 +155,7 @@ public class ExoByte extends Number {
      * @return массив байт
      */
     public static byte[] parseByteArray(long integer) {
-        int digits = (int) java.lang.Math.floor(Math.getNumberDegree(java.lang.Math.abs(integer), 256).doubleValue());
+        int digits = (int) java.lang.Math.floor(Math.degreeOf(java.lang.Math.abs(integer), 256).doubleValue());
         byte[] bytes = new byte[digits + 1];
         for (; integer != 0 && digits >= 0; integer /= 256, digits--) {
             bytes[digits] = (byte) (integer % 256);

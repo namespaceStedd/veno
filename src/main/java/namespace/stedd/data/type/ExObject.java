@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import namespace.stedd.data.Converter;
 
 import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -53,6 +54,29 @@ public interface ExObject {
      */
     default String toJsonString() {
         return Converter.json.toJson(this);
+    }
+
+    /**
+     * Преобразование объекта в карту полей класса и их значений.
+     * @author Namespace Stedd
+     * @return карта полей класса и их значений
+     */
+    default Map<String, Object> toMap() {
+        return this.toMap(true);
+    }
+
+    /**
+     * Преобразование объекта в карту полей класса и их значений.
+     * @author Namespace Stedd
+     * @param includeParentFields необходимость включения полей родительского класса
+     * @return карта полей класса и их значений
+     */
+    default Map<String, Object> toMap(boolean includeParentFields) {
+        Map<String, Object> map = new HashMap<>();
+        for (ExoField field : ExoField.getFields(this, includeParentFields)) {
+            map.put(field.getName(), field.getValue());
+        }
+        return map;
     }
 
     /**

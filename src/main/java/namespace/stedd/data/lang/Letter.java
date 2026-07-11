@@ -27,4 +27,11 @@ public interface Letter {
      */
     byte getHidKey();
 
+    /**
+     * Получение порядкового номера буквы.
+     * @author Namespace Stedd
+     * @return порядковый номер буквы
+     */
+    int ordinal();
+
 }
