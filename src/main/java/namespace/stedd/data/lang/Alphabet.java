@@ -2,6 +2,7 @@ package namespace.stedd.data.lang;
 
 import namespace.stedd.data.lang.pack.LatinLetter;
 import namespace.stedd.data.lang.pack.RussianLetter;
+import namespace.stedd.data.type.ExoNumber;
 
 import static namespace.stedd.data.lang.AlphabetRule.*;
 
@@ -151,6 +152,269 @@ public enum Alphabet {
         char[] alphabet = this.getAlphabet(rule);
         System.arraycopy(alphabet, 0, firstLetters, beginningChars.length, length);
         return firstLetters;
+    }
+
+    /**
+     * Получение случайной буквы из нескольких алфавитов.
+     * @author Namespace Stedd
+     * @param alphabets перечисление поддерживаемых алфавитов
+     * @return случайная буква
+     */
+    public static Letter randomAlphabetLetter(Alphabet... alphabets) {
+        if (alphabets.length == 0) {
+            alphabets = Alphabet.values();
+        }
+        int alphabet = ExoNumber.random.nextInt(alphabets.length);
+        return alphabets[alphabet].randomAlphabetLetter();
+    }
+
+    /**
+     * Получение случайной буквы из нескольких алфавитов.
+     * @author Namespace Stedd
+     * @param alphabets перечисление поддерживаемых алфавитов
+     * @return случайная буква
+     */
+    public static char randomLetter(Alphabet... alphabets) {
+        return randomLetter(true, true, alphabets);
+    }
+
+    /**
+     * Получение случайной буквы из нескольких алфавитов.
+     * @author Namespace Stedd
+     * @param includeCapitalLetters включая заглавные буквы
+     * @param includeSmallLetters включая строчные буквы
+     * @param alphabets перечисление поддерживаемых алфавитов
+     * @return случайная буква
+     */
+    public static char randomLetter(boolean includeCapitalLetters, boolean includeSmallLetters, Alphabet... alphabets) {
+        if (alphabets.length == 0) {
+            alphabets = Alphabet.values();
+            // return Character.MIN_VALUE;
+        }
+        int letter = ExoNumber.random.nextInt(alphabets.length);
+        return alphabets[letter].randomLetter(includeCapitalLetters, includeSmallLetters);
+    }
+
+    /**
+     * Получение случайной заглавной буквы из нескольких алфавитов.
+     * @author Namespace Stedd
+     * @param alphabets перечисление поддерживаемых алфавитов
+     * @return случайная заглавная буква
+     */
+    public static char randomCapitalLetter(Alphabet... alphabets) {
+        return randomLetter(true, false, alphabets);
+    }
+
+    /**
+     * Получение случайной строчной буквы из нескольких алфавитов.
+     * @author Namespace Stedd
+     * @param alphabets перечисление поддерживаемых алфавитов
+     * @return случайная строчная буква
+     */
+    public static char randomSmallLetter(Alphabet... alphabets) {
+        return randomLetter(false, true, alphabets);
+    }
+
+    /**
+     * Получение массива случайных букв из нескольких алфавитов.
+     * @author Namespace Stedd
+     * @param length количество букв
+     * @param alphabets перечисление поддерживаемых алфавитов
+     * @return массив случайных букв
+     */
+    public static Letter[] randomAlphabetLetters(int length, Alphabet... alphabets) {
+        Letter[] letters = new Letter[length];
+        for (int i = 0; i < letters.length; i++) {
+            letters[i] = randomAlphabetLetter(alphabets);
+        }
+        return letters;
+    }
+
+    /**
+     * Получение массива случайных букв из нескольких алфавитов.
+     * @author Namespace Stedd
+     * @param length количество букв
+     * @param alphabets перечисление поддерживаемых алфавитов
+     * @return массив случайных букв
+     */
+    public static char[] randomLetters(int length, Alphabet... alphabets) {
+        return randomLetters(length, true, true, alphabets);
+    }
+
+    /**
+     * Получение массива случайных букв из нескольких алфавитов.
+     * @author Namespace Stedd
+     * @param length количество букв
+     * @param includeCapitalLetters включая заглавные буквы
+     * @param includeSmallLetters включая строчные буквы
+     * @param alphabets перечисление поддерживаемых алфавитов
+     * @return массив случайных букв
+     */
+    public static char[] randomLetters(int length, boolean includeCapitalLetters, boolean includeSmallLetters, Alphabet... alphabets) {
+        char[] letters = new char[length];
+        for (int i = 0; i < letters.length; i++) {
+            letters[i] = randomLetter(includeCapitalLetters, includeSmallLetters, alphabets);
+        }
+        return letters;
+    }
+
+    /**
+     * Получение массива случайных букв из нескольких алфавитов.
+     * @author Namespace Stedd
+     * @param length количество букв
+     * @param alphabets перечисление поддерживаемых алфавитов
+     * @return массив случайных букв
+     */
+    public static char[] randomCapitalLetters(int length, Alphabet... alphabets) {
+        return randomLetters(length, true, false, alphabets);
+    }
+
+    /**
+     * Получение массива случайных строчных букв из нескольких алфавитов.
+     * @author Namespace Stedd
+     * @param length количество букв
+     * @param alphabets перечисление поддерживаемых алфавитов
+     * @return массив случайных строчных букв
+     */
+    public static char[] randomSmallLetters(int length, Alphabet... alphabets) {
+        return randomLetters(length, false, true, alphabets);
+    }
+
+    /**
+     * Получение случайной буквы алфавита.
+     * @author Namespace Stedd
+     * @return случайная буква алфавита
+     */
+    public Letter randomAlphabetLetter() {
+        if (this.letters.length == 0) {
+            return Letter.EMPTY;
+        }
+        int random = ExoNumber.random.nextInt(this.letters.length);
+        return this.letters[random];
+    }
+
+    /**
+     * Получение случайной буквы алфавита.
+     * @author Namespace Stedd
+     * @return случайная буква алфавита
+     */
+    public char randomLetter() {
+        return this.randomLetter(true, true);
+    }
+
+    /**
+     * Получение случайной буквы алфавита.
+     * @author Namespace Stedd
+     * @param includeCapitalLetters включая заглавные буквы
+     * @param includeSmallLetters включая строчные буквы
+     * @return случайная буква алфавита
+     */
+    public char randomLetter(boolean includeCapitalLetters, boolean includeSmallLetters) {
+        if (!includeCapitalLetters && !includeSmallLetters) {
+            return '0';
+        }
+        Letter randomLetter = this.randomAlphabetLetter();
+        if (includeCapitalLetters && includeSmallLetters) {
+            return ExoNumber.random.nextBoolean() ?
+                    randomLetter.getCapitalLetter() :
+                    randomLetter.getSmallLetter();
+        }
+        else if (includeCapitalLetters) {
+            return randomLetter.getCapitalLetter();
+        }
+        else {
+            return randomLetter.getSmallLetter();
+        }
+    }
+
+    /**
+     * Получение случайной заглавной буквы алфавита.
+     * @author Namespace Stedd
+     * @return случайная заглавная буква алфавита
+     */
+    public char randomCapitalLetter() {
+        return this.randomLetter(true, false);
+    }
+
+    /**
+     * Получение случайной строчной буквы алфавита.
+     * @author Namespace Stedd
+     * @return случайная строчной буква алфавита
+     */
+    public char randomSmallLetter() {
+        return this.randomLetter(false, true);
+    }
+
+    /**
+     * Получение массива случайных букв алфавита.
+     * @author Namespace Stedd
+     * @param length количество букв
+     * @return массив случайных букв алфавита
+     */
+    public Letter[] randomAlphabetLetters(int length) {
+        Letter[] letters = new Letter[length];
+        for (int i = 0; i < letters.length; i++) {
+            letters[i] = this.randomAlphabetLetter();
+        }
+        return letters;
+    }
+
+    /**
+     * Получение массива случайных букв алфавита.
+     * @author Namespace Stedd
+     * @param length количество букв
+     * @return массив случайных букв алфавита
+     */
+    public char[] randomLetters(int length) {
+        char[] chars = new char[length];
+        for (int i = 0; i < chars.length; i++) {
+            chars[i] = this.randomLetter();
+        }
+        return chars;
+    }
+
+    /**
+     * Получение массива случайных букв алфавита.
+     * @author Namespace Stedd
+     * @param length количество букв
+     * @param includeCapitalLetters включая заглавные буквы
+     * @param includeSmallLetters включая строчные буквы
+     * @return массив случайных букв алфавита
+     */
+    public char[] randomLetters(int length, boolean includeCapitalLetters, boolean includeSmallLetters) {
+        char[] chars = new char[length];
+        for (int i = 0; i < chars.length; i++) {
+            chars[i] = this.randomLetter(includeCapitalLetters, includeSmallLetters);
+        }
+        return chars;
+    }
+
+    /**
+     * Получение массива случайных заглавных букв алфавита.
+     * @author Namespace Stedd
+     * @param length количество букв
+     * @return массив случайных заглавных букв алфавита
+     */
+    public char[] randomCapitalLetters(int length) {
+        char[] chars = new char[length];
+        for (int i = 0; i < chars.length; i++) {
+            chars[i] = this.randomCapitalLetter();
+        }
+        return chars;
+    }
+
+    /**
+     * Получение массива случайных строчных букв алфавита.
+     * @author Namespace Stedd
+     * @param length количество букв
+     * @return массив случайных строчных букв алфавита
+     */
+    public char[] randomSmallLetters(int length) {
+        char[] chars = new char[length];
+        for (int i = 0; i < chars.length; i++) {
+            chars[i] = this.randomSmallLetter();
+        }
+        return chars;
     }
 
     /**

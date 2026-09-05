@@ -2,12 +2,18 @@ package namespace.stedd.data.type;
 
 import namespace.stedd.data.Converter;
 import namespace.stedd.data.adapter.TypeConverterRule;
+import namespace.stedd.data.regex.CharRange;
+import namespace.stedd.data.type.number.*;
+import namespace.stedd.data.type.number.Math;
 
 import java.lang.reflect.Array;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
+import static namespace.stedd.data.type.ExoNumber.random;
 
 /**
  * Расширенное представление коллекций.
@@ -443,13 +449,41 @@ public class ExoCollection {
     }
 
     /**
+     * Объединение массивов логического типа данных в один.
+     * @author Namespace Stedd
+     * @param firstArray первый массив логического типа данных
+     * @param secondArray второй массив логического типа данных
+     * @return объединённый массив логического типа данных
+     */
+    public static boolean[] mergeArrays(boolean[] firstArray, boolean... secondArray) {
+        boolean[] superArray = new boolean[firstArray.length + secondArray.length];
+        System.arraycopy(firstArray, 0, superArray, 0, firstArray.length);
+        System.arraycopy(secondArray, 0, superArray, firstArray.length, secondArray.length);
+        return superArray;
+    }
+
+    /**
+     * Объединение массивов символов в один.
+     * @author Namespace Stedd
+     * @param firstArray первый массив символов
+     * @param secondArray второй массив символов
+     * @return объединённый массив символов
+     */
+    public static char[] mergeArrays(char[] firstArray, char... secondArray) {
+        char[] superArray = new char[firstArray.length + secondArray.length];
+        System.arraycopy(firstArray, 0, superArray, 0, firstArray.length);
+        System.arraycopy(secondArray, 0, superArray, firstArray.length, secondArray.length);
+        return superArray;
+    }
+
+    /**
      * Объединение массивов байт в один.
      * @author Namespace Stedd
      * @param firstArray первый массив байт
      * @param secondArray второй массив байт
      * @return объединённый массив байт
      */
-    public static byte[] mergeArrays(byte[] firstArray, byte[] secondArray) {
+    public static byte[] mergeArrays(byte[] firstArray, byte... secondArray) {
         byte[] superArray = new byte[firstArray.length + secondArray.length];
         System.arraycopy(firstArray, 0, superArray, 0, firstArray.length);
         System.arraycopy(secondArray, 0, superArray, firstArray.length, secondArray.length);
@@ -463,7 +497,7 @@ public class ExoCollection {
      * @param secondArray второй массив малых целых чисел
      * @return объединённый массив малых целых чисел
      */
-    public static short[] mergeArrays(short[] firstArray, short[] secondArray) {
+    public static short[] mergeArrays(short[] firstArray, short... secondArray) {
         short[] superArray = new short[firstArray.length + secondArray.length];
         System.arraycopy(firstArray, 0, superArray, 0, firstArray.length);
         System.arraycopy(secondArray, 0, superArray, firstArray.length, secondArray.length);
@@ -477,7 +511,7 @@ public class ExoCollection {
      * @param secondArray второй массив целых чисел
      * @return объединённый массив целых чисел
      */
-    public static int[] mergeArrays(int[] firstArray, int[] secondArray) {
+    public static int[] mergeArrays(int[] firstArray, int... secondArray) {
         int[] superArray = new int[firstArray.length + secondArray.length];
         System.arraycopy(firstArray, 0, superArray, 0, firstArray.length);
         System.arraycopy(secondArray, 0, superArray, firstArray.length, secondArray.length);
@@ -491,7 +525,7 @@ public class ExoCollection {
      * @param secondArray второй массив больших целых чисел
      * @return объединённый массив больших целых чисел
      */
-    public static long[] mergeArrays(long[] firstArray, long[] secondArray) {
+    public static long[] mergeArrays(long[] firstArray, long... secondArray) {
         long[] superArray = new long[firstArray.length + secondArray.length];
         System.arraycopy(firstArray, 0, superArray, 0, firstArray.length);
         System.arraycopy(secondArray, 0, superArray, firstArray.length, secondArray.length);
@@ -505,7 +539,7 @@ public class ExoCollection {
      * @param secondArray второй массив дробных чисел
      * @return объединённый массив дробных чисел
      */
-    public static float[] mergeArrays(float[] firstArray, float[] secondArray) {
+    public static float[] mergeArrays(float[] firstArray, float... secondArray) {
         float[] superArray = new float[firstArray.length + secondArray.length];
         System.arraycopy(firstArray, 0, superArray, 0, firstArray.length);
         System.arraycopy(secondArray, 0, superArray, firstArray.length, secondArray.length);
@@ -519,8 +553,31 @@ public class ExoCollection {
      * @param secondArray второй массив дробных чисел двойной точности
      * @return объединённый массив дробных чисел двойной точности
      */
-    public static double[] mergeArrays(double[] firstArray, double[] secondArray) {
+    public static double[] mergeArrays(double[] firstArray, double... secondArray) {
         double[] superArray = new double[firstArray.length + secondArray.length];
+        System.arraycopy(firstArray, 0, superArray, 0, firstArray.length);
+        System.arraycopy(secondArray, 0, superArray, firstArray.length, secondArray.length);
+        return superArray;
+    }
+
+    /**
+     * Объединение массивов объектов в один.
+     * @author Namespace Stedd
+     * @param firstArray первый массив объектов
+     * @param secondArray второй массив объектов
+     * @return объединённый массив объектов
+     * @param <T> универсальный параметр типа
+     */
+    @SafeVarargs
+    public static <T> T[] mergeArrays(T[] firstArray, T... secondArray) {
+        Class<?> tClass = firstArray.length > 0 ? firstArray[0].getClass() :
+                secondArray.length > 0 ? secondArray[0].getClass() :
+                        null;
+        if (tClass == null) {
+            return firstArray;
+        }
+        // noinspection unchecked
+        T[] superArray = (T[]) Array.newInstance(tClass, firstArray.length + secondArray.length);
         System.arraycopy(firstArray, 0, superArray, 0, firstArray.length);
         System.arraycopy(secondArray, 0, superArray, firstArray.length, secondArray.length);
         return superArray;
@@ -541,6 +598,631 @@ public class ExoCollection {
         System.arraycopy(firstArray, 0, superArray, 0, firstArray.length);
         System.arraycopy(secondArray, 0, superArray, firstArray.length, secondArray.length);
         return superArray;
+    }
+
+    /**
+     * Создание массива случайных логических типов данных указанной длины.
+     * @author Namespace Stedd
+     * @param length длина массива
+     * @return массив случайных логических типов данных
+     */
+    public static boolean[] generateBooleanArray(int length) {
+        boolean[] bools = new boolean[length];
+        for (int i = 0; i < bools.length; i++) {
+            bools[i] = random.nextBoolean();
+        }
+        return bools;
+    }
+
+    /**
+     * Создание массива случайных символов указанной длины.
+     * @author Namespace Stedd
+     * @param length длина массива
+     * @return массив случайных символов
+     */
+    public static char[] generateCharArray(int length) {
+        return generateCharArray(Character.MIN_VALUE, Character.MAX_VALUE, length);
+    }
+
+    /**
+     * Создание массива случайных символов указанной длины.
+     * @author Namespace Stedd
+     * @param from начальный символ
+     * @param to конечный символ
+     * @param length длина массива
+     * @return массив случайных символов
+     */
+    public static char[] generateCharArray(int from, int to, int length) {
+        return generateCharArray((char) from, (char) to, length);
+    }
+
+    /**
+     * Создание массива случайных символов указанной длины.
+     * @author Namespace Stedd
+     * @param from начальный символ
+     * @param to конечный символ
+     * @param length длина массива
+     * @return массив случайных символов
+     */
+    public static char[] generateCharArray(char from, char to, int length) {
+//        if (from > to) {
+//            char temp = from;
+//            from = to;
+//            to = temp;
+//        }
+        char[] chars = new char[length];
+        if (from == to) {
+            Arrays.fill(chars, from);
+            return chars;
+        }
+        else if (to < from) {
+            return chars;
+        }
+        for (int i = 0; i < chars.length; i++) {
+            chars[i] = (char) (random.nextInt(to - from) + from);
+        }
+        return chars;
+    }
+
+    /**
+     * Создание массива случайных символов указанной длины.
+     * @author Namespace Stedd
+     * @param range диапазон значений
+     * @param length длина массива
+     * @return массив случайных символов
+     */
+    public static char[] generateCharArray(CharRange range, int length) {
+        return generateCharArray(range.min(), range.max(), length);
+    }
+
+    /**
+     * Создание массива случайных байт указанной длины.
+     * @author Namespace Stedd
+     * @param length длина массива
+     * @return массив случайных чисел
+     */
+    public static byte[] generateByteArray(int length) {
+        return generateByteArray(Byte.MIN_VALUE, Byte.MAX_VALUE, length);
+    }
+
+    /**
+     * Создание массива случайных байт указанной длины.
+     * @author Namespace Stedd
+     * @param min минимальное значение
+     * @param max максимальное значение
+     * @param length длина массива
+     * @return массив случайных чисел
+     */
+    public static byte[] generateByteArray(byte min, byte max, int length) {
+        byte[] bytes = new byte[length];
+        if (max == min) {
+            Arrays.fill(bytes, min);
+            return bytes;
+        }
+        else if (max < min) {
+            return bytes;
+        }
+        if (max < Byte.MAX_VALUE) {
+            max++;
+        }
+        for (int i = 0; i < bytes.length; i++) {
+            bytes[i] = (byte) random.nextInt(min, max);
+        }
+        return bytes;
+    }
+
+    /**
+     * Создание массива случайных байт указанной длины.
+     * @author Namespace Stedd
+     * @param range диапазон значений
+     * @param length длина массива
+     * @return массив случайных чисел
+     */
+    public static byte[] generateByteArray(ByteRange range, int length) {
+        return generateByteArray(range.min(), range.max(), length);
+    }
+
+    /**
+     * Создание массива случайных малых целых чисел указанной длины.
+     * @author Namespace Stedd
+     * @param length длина массива
+     * @return массив случайных чисел
+     */
+    public static short[] generateShortArray(int length) {
+        return generateShortArray(Short.MIN_VALUE, Short.MAX_VALUE, length);
+    }
+
+    /**
+     * Создание массива случайных малых целых чисел указанной длины.
+     * @author Namespace Stedd
+     * @param min минимальное значение
+     * @param max максимальное значение
+     * @param length длина массива
+     * @return массив случайных чисел
+     */
+    public static short[] generateShortArray(short min, short max, int length) {
+        short[] shorts = new short[length];
+        if (max == min) {
+            Arrays.fill(shorts, min);
+            return shorts;
+        }
+        else if (max < min) {
+            return shorts;
+        }
+        if (max < Short.MAX_VALUE) {
+            max++;
+        }
+        for (int i = 0; i < shorts.length; i++) {
+            shorts[i] = (short) random.nextInt(min, max);
+        }
+        return shorts;
+    }
+
+    /**
+     * Создание массива случайных малых целых чисел указанной длины.
+     * @author Namespace Stedd
+     * @param range диапазон значений
+     * @param length длина массива
+     * @return массив случайных чисел
+     */
+    public static short[] generateShortArray(ShortRange range, int length) {
+        return generateShortArray(range.min(), range.max(), length);
+    }
+
+    /**
+     * Создание массива случайных целых чисел указанной длины.
+     * @author Namespace Stedd
+     * @param length длина массива
+     * @return массив случайных чисел
+     */
+    public static int[] generateIntegerArray(int length) {
+        return generateIntegerArray(Integer.MIN_VALUE, Integer.MAX_VALUE, length);
+    }
+
+    /**
+     * Создание массива случайных целых чисел указанной длины.
+     * @author Namespace Stedd
+     * @param min минимальное значение
+     * @param max максимальное значение
+     * @param length длина массива
+     * @return массив случайных чисел
+     */
+    public static int[] generateIntegerArray(int min, int max, int length) {
+        int[] ints = new int[length];
+        if (max == min) {
+            Arrays.fill(ints, min);
+            return ints;
+        }
+        else if (max < min) {
+            return ints;
+        }
+        if (max < Integer.MAX_VALUE) {
+            max++;
+        }
+        for (int i = 0; i < ints.length; i++) {
+            ints[i] = random.nextInt(min, max);
+        }
+        return ints;
+    }
+
+    /**
+     * Создание массива случайных целых чисел указанной длины.
+     * @author Namespace Stedd
+     * @param range диапазон значений
+     * @param length длина массива
+     * @return массив случайных чисел
+     */
+    public static int[] generateIntegerArray(IntRange range, int length) {
+        return generateIntegerArray(range.min(), range.max(), length);
+    }
+
+    /**
+     * Создание массива случайных больших целых чисел указанной длины.
+     * @author Namespace Stedd
+     * @param length длина массива
+     * @return массив случайных чисел
+     */
+    public static long[] generateLongArray(int length) {
+        return generateLongArray(Long.MIN_VALUE, Long.MAX_VALUE, length);
+    }
+
+    /**
+     * Создание массива случайных больших целых чисел указанной длины.
+     * @author Namespace Stedd
+     * @param min минимальное значение
+     * @param max максимальное значение
+     * @param length длина массива
+     * @return массив случайных чисел
+     */
+    public static long[] generateLongArray(long min, long max, int length) {
+        long[] longs = new long[length];
+        if (max == min) {
+            Arrays.fill(longs, min);
+            return longs;
+        }
+        else if (max < min) {
+            return longs;
+        }
+        if (max < Long.MAX_VALUE) {
+            max++;
+        }
+        for (int i = 0; i < longs.length; i++) {
+            longs[i] = random.nextLong(min, max);
+        }
+        return longs;
+    }
+
+    /**
+     * Создание массива случайных больших целых чисел указанной длины.
+     * @author Namespace Stedd
+     * @param range диапазон значений
+     * @param length длина массива
+     * @return массив случайных чисел
+     */
+    public static long[] generateLongArray(LongRange range, int length) {
+        return generateLongArray(range.min(), range.max(), length);
+    }
+
+    /**
+     * Создание массива случайных дробных чисел указанной длины.
+     * @author Namespace Stedd
+     * @param length длина массива
+     * @return массив случайных чисел
+     */
+    public static float[] generateFloatArray(int length) {
+        return generateFloatArray(-Float.MAX_VALUE, Float.MAX_VALUE, length);
+    }
+
+    /**
+     * Создание массива случайных дробных чисел указанной длины.
+     * @author Namespace Stedd
+     * @param length длина массива
+     * @param accuracy точность округления
+     * @return массив случайных чисел
+     */
+    public static float[] generateFloatArray(int accuracy, int length) {
+        return generateFloatArray(-Float.MAX_VALUE, Float.MAX_VALUE, accuracy, length);
+    }
+
+    /**
+     * Создание массива случайных дробных чисел указанной длины.
+     * @author Namespace Stedd
+     * @param min минимальное значение
+     * @param max максимальное значение
+     * @param length длина массива
+     * @return массив случайных чисел
+     */
+    public static float[] generateFloatArray(float min, float max, int length) {
+        return generateFloatArray(FloatRange.create(min, max), length);
+    }
+
+    /**
+     * Создание массива случайных дробных чисел указанной длины.
+     * @author Namespace Stedd
+     * @param min минимальное значение
+     * @param max максимальное значение
+     * @param accuracy точность округления
+     * @param length длина массива
+     * @return массив случайных чисел
+     */
+    public static float[] generateFloatArray(float min, float max, int accuracy, int length) {
+        return generateFloatArray(FloatRange.create(min, max), accuracy, length);
+    }
+
+    /**
+     * Создание массива случайных дробных чисел указанной длины.
+     * @author Namespace Stedd
+     * @param range диапазон значений
+     * @param length длина массива
+     * @return массив случайных чисел
+     */
+    public static float[] generateFloatArray(FloatRange range, int length) {
+        return generateFloatArray(range, -1, length);
+    }
+
+    /**
+     * Создание массива случайных дробных чисел указанной длины.
+     * @author Namespace Stedd
+     * @param range диапазон значений
+     * @param accuracy точность округления
+     * @param length длина массива
+     * @return массив случайных чисел
+     */
+    public static float[] generateFloatArray(FloatRange range, int accuracy, int length) {
+        float[] floats = new float[length];
+        BigDecimal min = range.bigMin(),
+                max = range.bigMax();
+        if (max.compareTo(min) == 0) {
+            Arrays.fill(floats, max.floatValue());
+            return floats;
+        }
+        if (max.compareTo(min) < 0) {
+            return floats;
+        }
+        if (max.compareTo(BigDecimal.valueOf(Float.MAX_VALUE)) < 0) {
+            max = max.add(BigDecimal.valueOf(Float.MIN_VALUE));
+        }
+        for (int i = 0; i < floats.length; i++) {
+            floats[i] = Math.round(random.nextFloat(min.floatValue(), max.floatValue()), accuracy);
+        }
+        return floats;
+    }
+
+    /**
+     * Создание массива случайных дробных чисел двойной точности указанной длины.
+     * @author Namespace Stedd
+     * @param length длина массива
+     * @return массив случайных чисел
+     */
+    public static double[] generateDoubleArray(int length) {
+        return generateDoubleArray(-Double.MAX_VALUE, Double.MAX_VALUE, length);
+    }
+
+    /**
+     * Создание массива случайных дробных чисел двойной точности указанной длины.
+     * @author Namespace Stedd
+     * @param accuracy точность округления
+     * @param length длина массива
+     * @return массив случайных чисел
+     */
+    public static double[] generateDoubleArray(int accuracy, int length) {
+        return generateDoubleArray(-Double.MAX_VALUE, Double.MAX_VALUE, accuracy, length);
+    }
+
+    /**
+     * Создание массива случайных дробных чисел двойной точности указанной длины.
+     * @author Namespace Stedd
+     * @param min минимальное значение
+     * @param max максимальное значение
+     * @param length длина массива
+     * @return массив случайных чисел
+     */
+    public static double[] generateDoubleArray(double min, double max, int length) {
+        return generateDoubleArray(DoubleRange.create(min, max), length);
+    }
+
+    /**
+     * Создание массива случайных дробных чисел двойной точности указанной длины.
+     * @author Namespace Stedd
+     * @param min минимальное значение
+     * @param max максимальное значение
+     * @param accuracy точность округления
+     * @param length длина массива
+     * @return массив случайных чисел
+     */
+    public static double[] generateDoubleArray(double min, double max, int accuracy, int length) {
+        return generateDoubleArray(DoubleRange.create(min, true, max, true), accuracy, length);
+    }
+
+    /**
+     * Создание массива случайных дробных чисел двойной точности указанной длины.
+     * @author Namespace Stedd
+     * @param range диапазон значений
+     * @param length длина массива
+     * @return массив случайных чисел
+     */
+    public static double[] generateDoubleArray(DoubleRange range, int length) {
+        return generateDoubleArray(range, -1, length);
+    }
+
+    /**
+     * Создание массива случайных дробных чисел двойной точности указанной длины.
+     * @author Namespace Stedd
+     * @param range диапазон значений
+     * @param accuracy точность округления
+     * @param length длина массива
+     * @return массив случайных чисел
+     */
+    public static double[] generateDoubleArray(DoubleRange range, int accuracy, int length) {
+        double[] doubles = new double[length];
+        BigDecimal min = range.bigMin(),
+                max = range.bigMax();
+        if (max.compareTo(min) == 0) {
+            Arrays.fill(doubles, max.doubleValue());
+            return doubles;
+        }
+        if (max.compareTo(min) < 0) {
+            return doubles;
+        }
+        if (max.compareTo(BigDecimal.valueOf(Double.MAX_VALUE)) < 0) {
+            max = max.add(BigDecimal.valueOf(Double.MIN_VALUE));
+        }
+        for (int i = 0; i < doubles.length; i++) {
+            doubles[i] = Math.round(random.nextDouble(min.doubleValue(), max.doubleValue()), accuracy);
+        }
+        return doubles;
+    }
+
+    /**
+     * Приведение массива к указанной длине.
+     * @author Namespace Stedd
+     * @param length длина массива
+     * @param array массив данных
+     * @return массив данных указанной длины
+     */
+    public static boolean[] leadToLength(int length, boolean... array) {
+        if (array.length < length) {
+            return mergeArrays(array, ExoBoolean.repeat(false, length - array.length));
+        }
+        else if (array.length > length) {
+            return Arrays.copyOfRange(array, 0, length);
+        }
+        else {
+            return array;
+        }
+    }
+
+    /**
+     * Приведение массива к указанной длине.
+     * @author Namespace Stedd
+     * @param length длина массива
+     * @param array массив данных
+     * @return массив данных указанной длины
+     */
+    public static char[] leadToLength(int length, char... array) {
+        if (array.length < length) {
+            return mergeArrays(array, ExoString.repeat(' ', length - array.length));
+        }
+        else if (array.length > length) {
+            return Arrays.copyOfRange(array, 0, length);
+        }
+        else {
+            return array;
+        }
+    }
+
+    /**
+     * Приведение массива к указанной длине.
+     * @author Namespace Stedd
+     * @param length длина массива
+     * @param array массив данных
+     * @return массив данных указанной длины
+     */
+    public static byte[] leadToLength(int length, byte... array) {
+        if (array.length < length) {
+            return mergeArrays(array, ExoNumber.repeat((byte) 0, length - array.length));
+        }
+        else if (array.length > length) {
+            return Arrays.copyOfRange(array, 0, length);
+        }
+        else {
+            return array;
+        }
+    }
+
+    /**
+     * Приведение массива к указанной длине.
+     * @author Namespace Stedd
+     * @param length длина массива
+     * @param array массив данных
+     * @return массив данных указанной длины
+     */
+    public static short[] leadToLength(int length, short... array) {
+        if (array.length < length) {
+            return mergeArrays(array, ExoNumber.repeat((short) 0, length - array.length));
+        }
+        else if (array.length > length) {
+            return Arrays.copyOfRange(array, 0, length);
+        }
+        else {
+            return array;
+        }
+    }
+
+    /**
+     * Приведение массива к указанной длине.
+     * @author Namespace Stedd
+     * @param length длина массива
+     * @param array массив данных
+     * @return массив данных указанной длины
+     */
+    public static int[] leadToLength(int length, int... array) {
+        if (array.length < length) {
+            return mergeArrays(array, ExoNumber.repeat(0, length - array.length));
+        }
+        else if (array.length > length) {
+            return Arrays.copyOfRange(array, 0, length);
+        }
+        else {
+            return array;
+        }
+    }
+
+    /**
+     * Приведение массива к указанной длине.
+     * @author Namespace Stedd
+     * @param length длина массива
+     * @param array массив данных
+     * @return массив данных указанной длины
+     */
+    public static long[] leadToLength(int length, long... array) {
+        if (array.length < length) {
+            return mergeArrays(array, ExoNumber.repeat(0L, length - array.length));
+        }
+        else if (array.length > length) {
+            return Arrays.copyOfRange(array, 0, length);
+        }
+        else {
+            return array;
+        }
+    }
+
+    /**
+     * Приведение массива к указанной длине.
+     * @author Namespace Stedd
+     * @param length длина массива
+     * @param array массив данных
+     * @return массив данных указанной длины
+     */
+    public static float[] leadToLength(int length, float... array) {
+        if (array.length < length) {
+            return mergeArrays(array, ExoNumber.repeat(0.f, length - array.length));
+        }
+        else if (array.length > length) {
+            return Arrays.copyOfRange(array, 0, length);
+        }
+        else {
+            return array;
+        }
+    }
+
+    /**
+     * Приведение массива к указанной длине.
+     * @author Namespace Stedd
+     * @param length длина массива
+     * @param array массив данных
+     * @return массив данных указанной длины
+     */
+    public static double[] leadToLength(int length, double... array) {
+        if (array.length < length) {
+            return mergeArrays(array, ExoNumber.repeat(0., length - array.length));
+        }
+        else if (array.length > length) {
+            return Arrays.copyOfRange(array, 0, length);
+        }
+        else {
+            return array;
+        }
+    }
+
+    /**
+     * Приведение массива к указанной длине.
+     * @author Namespace Stedd
+     * @param length длина массива
+     * @param defaultValue значение по умолчанию
+     * @param array массив данных
+     * @return массив данных указанной длины
+     * @param <T> универсальный параметр типа
+     */
+    @SafeVarargs
+    public static <T> T[] leadToLength(int length, T defaultValue, T... array) {
+        if (array.length < length) {
+            return mergeArrays(array, repeat(defaultValue, length - array.length));
+        }
+        else if (array.length > length) {
+            return Arrays.copyOfRange(array, 0, length);
+        }
+        else {
+            return array;
+        }
+    }
+
+    /**
+     * Повторение объекта указанное количество раз.
+     * @author Namespace Stedd
+     * @param t повторяемый объект
+     * @param times количество повторений
+     * @return массив объектов повторённых значений
+     * @param <T> универсальный параметр типа
+     */
+    public static <T> T[] repeat(T t, int times) {
+        times = java.lang.Math.clamp(times, 0, Integer.MAX_VALUE);
+        // noinspection unchecked
+        T[] data = (T[]) (Array.newInstance(t.getClass(), times));
+        for (int i = 0; i < times; i++) {
+            data[i] = t;
+        }
+        return data;
     }
 
     /**
@@ -667,11 +1349,25 @@ public class ExoCollection {
      * @param <V> универсальное типовое значение
      */
     public static <K, V> String toMapString(Map<K, V> map, String delimiter) {
+        return toMapString(map, delimiter, "\n");
+    }
+
+    /**
+     * Преобразование карты в строку с разделителем.
+     * @author Namespace Stedd
+     * @param map карта
+     * @param keyValueDelimiter разделитель пары "ключ-значение"
+     * @param pairDelimiter разделитель пар
+     * @return строчное представление списка
+     * @param <K> универсальный типовой ключ
+     * @param <V> универсальное типовое значение
+     */
+    public static <K, V> String toMapString(Map<K, V> map, String keyValueDelimiter, String pairDelimiter) {
         StringBuilder string = new StringBuilder();
         for (K k : map.keySet()) {
-            string.append(k.toString()).append(delimiter).append(map.get(k)).append('\n');
+            string.append(k.toString()).append(keyValueDelimiter).append(map.get(k)).append(pairDelimiter);
         }
-        return (!string.isEmpty() ? string.deleteCharAt(string.length() - 1) : string).toString();
+        return (!string.isEmpty() ? string.substring(0, string.length() - pairDelimiter.length()) : string).toString();
     }
 
     /**

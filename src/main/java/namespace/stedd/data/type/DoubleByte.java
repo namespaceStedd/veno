@@ -6,8 +6,8 @@ package namespace.stedd.data.type;
  */
 public class DoubleByte {
 
-    private byte high;   // Верхний регистр
-    private byte low;   // Нижний регистр
+    protected byte high;   // Верхний регистр
+    protected byte low;   // Нижний регистр
 
     /**
      * Создание удвоенного байта.

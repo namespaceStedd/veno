@@ -14,8 +14,8 @@ import java.util.List;
  */
 public class ExoField {
 
-    private final Field field;   // Поле класса
-    private Object value;   // Значение экземпляра класса
+    protected final Field field;   // Поле класса
+    protected Object value;   // Значение экземпляра класса
 
     /**
      * Создание расширенного представления поля класса.

@@ -2,13 +2,17 @@ package namespace.stedd.data.type;
 
 import namespace.stedd.data.type.number.Math;
 
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
 /**
  * Расширенное представление байта.
  * @author Namespace Stedd
  */
 public class ExoByte extends Number {
 
-    private Byte bytee;   // Представляемый байт
+    protected Byte bytee;   // Представляемый байт
 
     /**
      * Создание несуществующего представляемого байта.
@@ -52,7 +56,7 @@ public class ExoByte extends Number {
      * @param ifNull если текущее значение NULL
      * @return представляемый байт
      */
-    public double getByte(byte ifNull) {
+    public byte getByte(byte ifNull) {
         return this.bytee != null ? this.bytee : ifNull;
     }
 
@@ -63,6 +67,37 @@ public class ExoByte extends Number {
      */
     public void setByte(Byte bytee) {
         this.bytee = bytee;
+    }
+
+    /**
+     * Замена бита по его адресу в текущем байте.
+     * @author Namespace Stedd
+     * @param address адрес бита
+     * @param bit новое значение бита
+     */
+    public void setBit(int address, int bit) {
+        this.bytee = setBit(this.getByte((byte) 0), address, bit);
+    }
+
+    /**
+     * Замена бита по его адресу в байте.
+     * @author Namespace Stedd
+     * @param bytee байт
+     * @param address адрес бита
+     * @param bit новое значение бита
+     * @return байт с изменённым битом
+     */
+    public static byte setBit(byte bytee, int address, int bit) {
+        if (address < 0 || 7 < address) {
+            return bytee;
+        }
+        bit = java.lang.Math.clamp(bit, 0, 1);
+        int value = 0;
+        for (int i = 7; 0 <= i; i--) {
+            int newBit = (i == address ? bit : bytee >> i) & 0b1;
+            value = (value << 1) | newBit;
+        }
+        return (byte) value;
     }
 
     /**
@@ -149,6 +184,57 @@ public class ExoByte extends Number {
     }
 
     /**
+     * Сдвиг битов байта на указанное количество позиций вправо.
+     * @author Namespace Stedd
+     * // TODO: INT?
+     * @param bytee байт
+     * @param quantity количество позиций сдвига
+     * @return сдвинутый байт
+     */
+    public static byte rightShift(byte bytee, int quantity) {
+        if (quantity < 0) {
+            return bytee;
+        }
+        quantity %= 8;
+        return (byte) ((bytee >>> quantity) | (bytee << (8 - quantity)));
+    }
+
+    /**
+     * Сдвиг битов байта на указанное количество позиций влево.
+     * @author Namespace Stedd
+     * // TODO: INT?
+     * @param bytee байт
+     * @param quantity количество позиций сдвига
+     * @return сдвинутый байт
+     */
+    public static byte leftShift(byte bytee, int quantity) {
+        if (quantity < 0) {
+            return bytee;
+        }
+        quantity %= 8;
+        return (byte) ((bytee << quantity) | (bytee >>> (8 - quantity)));
+    }
+
+    /**
+     * Получение количества значащих бит в массиве байт.
+     * @author Namespace Stedd
+     * @param bytes массив байт
+     * @return количество значащих бит
+     */
+    public static int significantBitsCount(byte... bytes) {
+        if (bytes == null || bytes.length == 0) {
+            return 0;
+        }
+        for (int i = 0; i < bytes.length; i++) {
+            String binaryByte = Integer.toBinaryString(bytes[i] & 0xff);
+            if (!binaryByte.equals("0")) {
+                return binaryByte.length() + 8 * (bytes.length - i - 1);
+            }
+        }
+        return 0;
+    }
+
+    /**
      * Преобразование большого целого числа в массив байт.
      * @author Namespace Stedd
      * @param integer большое целое число
@@ -200,6 +286,29 @@ public class ExoByte extends Number {
     }
 
     /**
+     * Получение массива байт из входящего потока.
+     * @author Namespace Stedd
+     * @param inputStream входящий поток
+     * @return массив байт
+     */
+    public static byte[] parseByteArray(InputStream inputStream) {
+        if (inputStream == null) {
+            return new byte[0];
+        }
+        try {
+            // Обработка InputStream
+            int bytesAvailable = inputStream.available();
+            byte[] bytes = new byte[bytesAvailable];
+            DataInputStream dataInputStream = new DataInputStream(inputStream);
+            dataInputStream.readFully(bytes);
+            return bytes;
+        }
+        catch (IOException exception) {
+            return new byte[0];
+        }
+    }
+
+    /**
      * Преобразование массива в обратный.
      * @author Namespace Stedd
      * @param array исходный массив
@@ -211,6 +320,50 @@ public class ExoByte extends Number {
             reverseArray[i] = array[j];
         }
         return reverseArray;
+    }
+
+    /**
+     * Преобразование десятичного числа в двоичное.
+     * @author Namespace Stedd
+     * @param number десятичное число
+     * @return двоичное число
+     */
+    public static String toBinaryValue(byte number) {
+        StringBuilder binaryValue = new StringBuilder();
+        for (int i = 0; i < 8; i++, number >>= 1) {
+            binaryValue.insert(0, number & 0b1);
+        }
+        return binaryValue.toString();
+    }
+
+    /**
+     * Преобразование двоичного числа в десятичное.
+     * @author Namespace Stedd
+     * @param binaryValue двоичное число
+     * @return десятичное число
+     */
+    public static byte fromBinaryValue(String binaryValue) {
+        if (!ExoString.notNullStatus(binaryValue)) {
+            return 0;
+        }
+        byte bit = (byte) (binaryValue.charAt(0) + '0' & 0b1);
+        byte number = 0;
+        number = bit;
+        for (int i = 1; i < binaryValue.length(); i++) {
+            char charDigit = binaryValue.charAt(i);
+            int digit = (charDigit + '0') & 0b1;
+            number = (byte) ((number << 1) + digit);
+        }
+        return number;
+    }
+
+    /**
+     * Получение бинарной строки из текущего байта.
+     * @author Namespace Stedd
+     * @return бинарный байт
+     */
+    public String binaryValue() {
+        return bytesToBinaryString(this.bytee);
     }
 
     /**
@@ -313,6 +466,15 @@ public class ExoByte extends Number {
             bytes[i / 8] = (byte) Integer.parseInt(binaryString.substring(i, i + 8), 2);
         }
         return bytes;
+    }
+
+    /**
+     * Получение строки HEX из текущего байта.
+     * @author Namespace Stedd
+     * @return HEX-байт
+     */
+    public String hexValue() {
+        return bytesToHexString(this.bytee);
     }
 
     /**
@@ -443,6 +605,16 @@ public class ExoByte extends Number {
             repeated = mergeByteArrays(repeated, bytes);
         }
         return repeated;
+    }
+
+    /**
+     * Повторение текущего значения указанное количество раз.
+     * @author Namespace Stedd
+     * @param times количество повторений
+     * @return массив байт повторённых значений
+     */
+    public byte[] repeat(int times) {
+        return ExoNumber.repeat(this.bytee, times);
     }
 
 }

@@ -2,14 +2,21 @@ package namespace.stedd.data.type;
 
 import namespace.stedd.data.type.number.Range;
 
+import java.util.Random;
+
 /**
  * Расширенное представление числа.
  * @author Namespace Stedd
  */
 public class ExoNumber extends Number {
 
-    private Double number;   // Представляемое число
-    private Range range;   // Диапазон возможных значений числа
+    protected Double number;   // Представляемое число
+    protected Range range;   // Диапазон возможных значений числа
+
+    /**
+     * Генератор псевдослучайных чисел.
+     */
+    public static final Random random = new Random();
 
     /**
      * Создание несуществующего представляемого числа.
@@ -90,6 +97,30 @@ public class ExoNumber extends Number {
     }
 
     /**
+     * Получение малого целого числа по двум байтам.
+     * @author Namespace Stedd
+     * @param high верхний байт
+     * @param low нижний байт
+     * @return малое целое число
+     */
+    public static short toShort(byte high, byte low) {
+        return (short) ((high << 8 & 0xff00) + (low & 0xff));
+    }
+
+    /**
+     * Получение массива байт по малому целому числу.
+     * @author Namespace Stedd
+     * @param number малое целое число
+     * @return массив байт
+     */
+    public static byte[] toByteArray(short number) {
+        return new byte[] {
+                (byte) (number >> 8 & 0xff),
+                (byte) (number & 0xff)
+        };
+    }
+
+    /**
      * Преобразование объекта в целое число с проверкой на NULL.
      * @author Namespace Stedd
      * @param integerable подвергающийся целоочислению объект
@@ -110,6 +141,36 @@ public class ExoNumber extends Number {
     public static Integer parseInteger(Object integerable, Integer ifNull) {
         String integerableString = ExoString.parseString(integerable, ExoString.parseString(ifNull, null));
         return ExoString.notNullStatus(integerableString) ? Integer.parseInt(integerableString.split("\\.")[0]) : ifNull;
+    }
+
+    /**
+     * Получение целого числа по массиву байт.
+     * @author Namespace Stedd
+     * @param bytes массив байт
+     * @return целое число
+     */
+    public static int toInteger(byte... bytes) {
+        int shifter = Math.min(4, bytes.length) - 1;
+        int number = 0;
+        for (int i = bytes.length - 1, j = 0; i >= 0 && j < 4; i--, j++) {
+            int coefficient = 8 * (shifter - i);
+            number += (bytes[i] << coefficient) & (0xff << coefficient);
+        }
+        return number;
+    }
+
+    /**
+     * Получение массива байт по целому числу.
+     * @author Namespace Stedd
+     * @param number целое число
+     * @return массив байт
+     */
+    public static byte[] toByteArray(int number) {
+        byte[] intBytes = new byte[4];
+        for (int i = 0; i < intBytes.length; i++) {
+            intBytes[intBytes.length - i - 1] = (byte) ((number >> (8 * i)) & 0xff);
+        }
+        return intBytes;
     }
 
     /**
@@ -154,6 +215,36 @@ public class ExoNumber extends Number {
      */
     public static long getLong(String number) {
         return number.contains("-") ? withMinimum(number) : withMaximum(number);
+    }
+
+    /**
+     * Получение большого целого числа по массиву байт.
+     * @author Namespace Stedd
+     * @param bytes массив байт
+     * @return большое целое число
+     */
+    public static long toLong(byte... bytes) {
+        int shifter = Math.min(8, bytes.length) - 1;
+        long number = 0;
+        for (int i = bytes.length - 1, j = 0; i >= 0 && j < 8; i--, j++) {
+            int coefficient = 8 * (shifter - i);
+            number += ((long) bytes[i] << coefficient) & (0xffL << coefficient);
+        }
+        return number;
+    }
+
+    /**
+     * Получение массива байт по большому целому числу.
+     * @author Namespace Stedd
+     * @param number большое целое число
+     * @return массив байт
+     */
+    public static byte[] toByteArray(long number) {
+        byte[] longBytes = new byte[8];
+        for (int i = 0; i < longBytes.length; i++) {
+            longBytes[longBytes.length - i - 1] = (byte) ((number >> (8 * i)) & 0xff);
+        }
+        return longBytes;
     }
 
     /**
@@ -278,6 +369,187 @@ public class ExoNumber extends Number {
             }
             return parseLong(longString, 0);
         }
+    }
+
+    /**
+     * Приближение указанного числа к ближайшему из вариантов.
+     * @author Namespace Stedd
+     * @param number байт
+     * @param variants варианты приближения
+     * @return ближайшее приблизительное число
+     */
+    public static byte approach(byte number, byte... variants) {
+        return (byte) approach(number, ExoCollection.toDoubleArray(variants));
+    }
+
+    /**
+     * Приближение указанного числа к ближайшему из вариантов.
+     * @author Namespace Stedd
+     * @param number малое целое число
+     * @param variants варианты приближения
+     * @return ближайшее приблизительное число
+     */
+    public static short approach(short number, short... variants) {
+        return (short) approach(number, ExoCollection.toDoubleArray(variants));
+    }
+
+    /**
+     * Приближение указанного числа к ближайшему из вариантов.
+     * @author Namespace Stedd
+     * @param number целое число
+     * @param variants варианты приближения
+     * @return ближайшее приблизительное число
+     */
+    public static int approach(int number, int... variants) {
+        return (int) approach(number, ExoCollection.toDoubleArray(variants));
+    }
+
+    /**
+     * Приближение указанного числа к ближайшему из вариантов.
+     * @author Namespace Stedd
+     * @param number большое целое число
+     * @param variants варианты приближения
+     * @return ближайшее приблизительное число
+     */
+    public static long approach(long number, long... variants) {
+        return (long) approach(number, ExoCollection.toDoubleArray(variants));
+    }
+
+    /**
+     * Приближение указанного числа к ближайшему из вариантов.
+     * @author Namespace Stedd
+     * @param number дробное число
+     * @param variants варианты приближения
+     * @return ближайшее приблизительное число
+     */
+    public static float approach(float number, float... variants) {
+        return (float) approach(number, ExoCollection.toDoubleArray(variants));
+    }
+
+    /**
+     * Приближение указанного числа к ближайшему из вариантов.
+     * @author Namespace Stedd
+     * @param number дробное число двойной точности
+     * @param variants варианты приближения
+     * @return ближайшее приблизительное число
+     */
+    public static double approach(double number, double... variants) {
+        if (variants.length == 0) {
+            return number;
+        }
+        double approach = variants[0];
+        for (int i = 1; i < variants.length; i++) {
+            if (Math.abs(number - variants[i]) < Math.abs(number - approach)) {
+                approach = variants[i];
+            }
+        }
+        return approach;
+    }
+
+    /**
+     * Повторение числа указанное количество раз.
+     * @author Namespace Stedd
+     * @param number повторяемый байт
+     * @param times количество повторений
+     * @return массив байт повторённых значений
+     */
+    public static byte[] repeat(byte number, int times) {
+        times = Math.clamp(times, 0, Integer.MAX_VALUE);
+        byte[] data = new byte[times];
+        for (int i = 0; i < times; i++) {
+            data[i] = number;
+        }
+        return data;
+    }
+
+    /**
+     * Повторение числа указанное количество раз.
+     * @author Namespace Stedd
+     * @param number повторяемое малое целое число
+     * @param times количество повторений
+     * @return массив малых целых чисел повторённых значений
+     */
+    public static short[] repeat(short number, int times) {
+        times = Math.clamp(times, 0, Integer.MAX_VALUE);
+        short[] data = new short[times];
+        for (int i = 0; i < times; i++) {
+            data[i] = number;
+        }
+        return data;
+    }
+
+    /**
+     * Повторение числа указанное количество раз.
+     * @author Namespace Stedd
+     * @param number повторяемое целое число
+     * @param times количество повторений
+     * @return массив целых чисел повторённых значений
+     */
+    public static int[] repeat(int number, int times) {
+        times = Math.clamp(times, 0, Integer.MAX_VALUE);
+        int[] data = new int[times];
+        for (int i = 0; i < times; i++) {
+            data[i] = number;
+        }
+        return data;
+    }
+
+    /**
+     * Повторение числа указанное количество раз.
+     * @author Namespace Stedd
+     * @param number повторяемое большое целое число
+     * @param times количество повторений
+     * @return массив больших целых чисел повторённых значений
+     */
+    public static long[] repeat(long number, int times) {
+        times = Math.clamp(times, 0, Integer.MAX_VALUE);
+        long[] data = new long[times];
+        for (int i = 0; i < times; i++) {
+            data[i] = number;
+        }
+        return data;
+    }
+
+    /**
+     * Повторение числа указанное количество раз.
+     * @author Namespace Stedd
+     * @param number повторяемое дробное число
+     * @param times количество повторений
+     * @return массив дробных чисел повторённых значений
+     */
+    public static float[] repeat(float number, int times) {
+        times = Math.clamp(times, 0, Integer.MAX_VALUE);
+        float[] data = new float[times];
+        for (int i = 0; i < times; i++) {
+            data[i] = number;
+        }
+        return data;
+    }
+
+    /**
+     * Повторение числа указанное количество раз.
+     * @author Namespace Stedd
+     * @param number повторяемое дробное число двойной точности
+     * @param times количество повторений
+     * @return массив дробных чисел двойной точности повторённых значений
+     */
+    public static double[] repeat(double number, int times) {
+        times = Math.clamp(times, 0, Integer.MAX_VALUE);
+        double[] data = new double[times];
+        for (int i = 0; i < times; i++) {
+            data[i] = number;
+        }
+        return data;
+    }
+
+    /**
+     * Повторение текущего значения указанное количество раз.
+     * @author Namespace Stedd
+     * @param times количество повторений
+     * @return массив байт повторённых значений
+     */
+    public double[] repeat(int times) {
+        return repeat(this.getNumber(0), times);
     }
 
 }

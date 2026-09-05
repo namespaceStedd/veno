@@ -18,11 +18,26 @@ public class Math {
      * @param accuracy точность округления
      * @return округлённое число
      */
+    public static float round(float number, int accuracy) {
+        if (accuracy < 0) {
+            return number;
+        }
+        return new BigDecimal(number).setScale(accuracy, RoundingMode.HALF_UP).floatValue();
+    }
+
+    /**
+     * Округление числа по правилам математики с указанной точностью.
+     * @author Namespace Stedd
+     * @param number округляемое число
+     * @param accuracy точность округления
+     * @return округлённое число
+     */
     public static double round(double number, int accuracy) {
         if (accuracy < 0) {
-            accuracy = 0;
+            return number;
         }
-        return java.lang.Math.round(number * java.lang.Math.pow(10, accuracy)) / java.lang.Math.pow(10, accuracy);
+//        return java.lang.Math.round(number * java.lang.Math.pow(10, accuracy)) / java.lang.Math.pow(10, accuracy);
+        return new BigDecimal(number).setScale(accuracy, RoundingMode.HALF_UP).doubleValue();
     }
 
     /**

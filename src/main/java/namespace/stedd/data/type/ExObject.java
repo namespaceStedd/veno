@@ -23,6 +23,18 @@ public interface ExObject {
     }
 
     /**
+     * Проверка объекта на NULL и возвращение другого экземпляра при NULL.
+     * @author Namespace Stedd
+     * @param object проверяемый объект
+     * @param ifNull объект на замену, если проверяемый NULL
+     * @return проверенный объект
+     * @param <T> универсальный параметр типа
+     */
+    static <T> T nullChecking(T object, T ifNull) {
+        return object != null ? object : ifNull;
+    }
+
+    /**
      * Сравнение равнозначности текущего объекта и указанного.
      * @author Namespace Stedd
      * @param object указанный объект

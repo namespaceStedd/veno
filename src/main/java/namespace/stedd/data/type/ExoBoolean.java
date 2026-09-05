@@ -6,7 +6,7 @@ package namespace.stedd.data.type;
  */
 public class ExoBoolean {
 
-    private Boolean bool;   // Представляемый логический тип данных
+    protected Boolean bool;   // Представляемый логический тип данных
 
     /**
      * Создание несуществующего представляемого логического типа данных.
@@ -84,6 +84,22 @@ public class ExoBoolean {
     public static Boolean parseBoolean(Object booleanable, Boolean ifNull) {
         String booleanableString = ExoString.parseString(booleanable, ExoString.parseString(ifNull, null));
         return ExoString.notNullStatus(booleanableString) ? Boolean.parseBoolean(booleanableString) : ifNull;
+    }
+
+    /**
+     * Повторение логического типа данных указанное количество раз.
+     * @author Namespace Stedd
+     * @param bool повторяемый логический тип данных
+     * @param times количество повторений
+     * @return массив логических типов данных повторённых значений
+     */
+    public static boolean[] repeat(boolean bool, int times) {
+        times = Math.clamp(times, 0, Integer.MAX_VALUE);
+        boolean[] data = new boolean[times];
+        for (int i = 0; i < times; i++) {
+            data[i] = bool;
+        }
+        return data;
     }
 
 }

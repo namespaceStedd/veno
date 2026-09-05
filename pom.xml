@@ -5,7 +5,7 @@
   <!-- Параметры проекта -->
   <groupId>namespace.stedd</groupId>
   <artifactId>data</artifactId>
-  <version>1.6</version>
+  <version>1.7</version>
   <packaging>jar</packaging>
   <name>veno</name>
   <description>Библиотека по управлению данными</description>
@@ -76,6 +76,12 @@
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-core</artifactId>
       <version>2.24.1</version>
+    </dependency>
+    <!-- Обработка аннотаций -->
+    <dependency>
+      <groupId>com.google.auto.service</groupId>
+      <artifactId>auto-service-annotations</artifactId>
+      <version>1.1.1</version>
     </dependency>
   </dependencies>
 

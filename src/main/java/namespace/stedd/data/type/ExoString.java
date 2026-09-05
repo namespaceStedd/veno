@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class ExoString {
 
-    private String string;   // Обычная строка
+    protected String string;   // Обычная строка
 
     /**
      * Создание строки NULL.
@@ -403,6 +403,92 @@ public class ExoString {
             aligned.add(cornedKey + " ".repeat(lengthBetween) + cornedValue);
         }
         return Converter.toListString(aligned, "\n");
+    }
+
+    /**
+     * Повторение символа указанное количество раз.
+     * @author Namespace Stedd
+     * @param charee повторяемый символ
+     * @param times количество повторений
+     * @return массив символов повторённых значений
+     */
+    public static char[] repeat(char charee, int times) {
+        times = Math.clamp(times, 0, Integer.MAX_VALUE);
+        char[] data = new char[times];
+        for (int i = 0; i < times; i++) {
+            data[i] = charee;
+        }
+        return data;
+    }
+
+    /**
+     * Замена символа в строке.
+     * @author Namespace Stedd JustSanya
+     * @param string исходная строка
+     * @param index индекс в строке
+     * @param charee заменяемый символ
+     * @return заменённая строка
+     */
+    public static String changeChar(String string, int index, char charee) {
+        if (index < 0 || string.length() <= index) {
+            return string;
+        }
+        return string.substring(0, index) + charee + string.substring(index + 1);
+    }
+
+    /**
+     * Замена регистра символа в строке.
+     * @author Namespace Stedd JustSanya
+     * @param string исходная строка
+     * @param index индекс в строке
+     * @return заменённая строка
+     */
+    public static String changeCase(String string, int index) {
+        if (index < 0 || string.length() <= index) {
+            return string;
+        }
+        char charee = string.charAt(index);
+        return changeChar(
+                string,
+                index,
+                Character.isLowerCase(charee) ? Character.toUpperCase(charee) : Character.toLowerCase(charee)
+        );
+    }
+
+    /**
+     * Замена регистра символа на верхний в строке.
+     * @author Namespace Stedd JustSanya
+     * @param string исходная строка
+     * @param index индекс в строке
+     * @return заменённая строка
+     */
+    public static String upperCase(String string, int index) {
+        if (index < 0 || string.length() <= index) {
+            return string;
+        }
+        return changeChar(
+                string,
+                index,
+                Character.toUpperCase(string.charAt(index))
+        );
+    }
+
+    /**
+     * Замена регистра символа на нижний в строке.
+     * @author Namespace Stedd JustSanya
+     * @param string исходная строка
+     * @param index индекс в строке
+     * @return заменённая строка
+     */
+    public static String lowerCase(String string, int index) {
+        if (index < 0 || string.length() <= index) {
+            return string;
+        }
+        return changeChar(
+                string,
+                index,
+                Character.toLowerCase(string.charAt(index))
+        );
     }
 
 }
